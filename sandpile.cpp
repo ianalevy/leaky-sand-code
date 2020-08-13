@@ -14,28 +14,6 @@ config(center,center)+=chips;
   return (config);
 }
 
-void topple(Matrix& sand, const int leak){
-int rows; rows=sand.Row();
-int cols; cols=sand.Col();
-int site;
-int give;
-const int thresh=leak+4;
-
-for (int i=1; i<rows-1; i++){
-    for (int j=1; j<cols-1; j++){
-        site=sand(i,j);
-        if(site>= thresh) {
-            give=floor(site/(thresh));
-            sand(i,j)= site%thresh;
-            sand(i+1,j)+=give;
-            sand(i-1,j)+=give;
-            sand(i,j+1)+=give;
-            sand(i,j-1)+=give;
-            }
-    }
-}
-}
-
 double maxEntry(const Matrix& sand)
 {
     double max;
@@ -54,14 +32,43 @@ double maxEntry(const Matrix& sand)
     return (max);
 }
 
-void stabilize(Matrix& sand, const int leak)
+void topple(Matrix& sand, const int leak, double& max){
+int rows; rows=sand.Row();
+int cols; cols=sand.Col();
+int site; int upSite;
+int give; 
+const int thresh=leak+4;
+
+for (int i=1; i<rows-1; i++){
+    for (int j=1; j<cols-1; j++){
+        site=sand(i,j);
+        if(site>= thresh) {
+            give=floor(site/(thresh));
+            upSite=site%thresh;
+
+            sand(i,j)= upSite;
+            sand(i+1,j)+=give;
+            sand(i-1,j)+=give;
+            sand(i,j+1)+=give;
+            sand(i,j-1)+=give;
+        }
+    }
+}
+
+max=maxEntry(sand);
+}
+
+void stabilize(Matrix& sand, const int leak, double& max)
 {
 const int thresh=leak+4;
-int max;
+
+if (max<0){
+    max=maxEntry(sand);
+}
+
 do
 {
-    topple(sand,leak);
-    max= maxEntry(sand);
+    topple(sand,leak,max);
 
 } while (max>= thresh);
 

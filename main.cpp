@@ -7,8 +7,7 @@
 #include "sandpile.h"
 #include <cmath>
 #include <fstream>
-
-using namespace std;
+#include <algorithm>
 
 
 int main()
@@ -16,24 +15,25 @@ int main()
 
   int chips; //total chips
   int dim; //size of initial config
+  double maxOfPile; //max of initial config;
 
-  cout << "chips=" << endl;
-  cin >> chips;
-  // cout << "initial size=" << endl;
-  // cin >> dim;
+  std::cout << "chips=" << std::endl;
+  std::cin >> chips;
+  // std::cout << "initial size=" << std::endl;
+  // std::cin >> dim;
 
   // chips=65;
   dim=7;
 
   Matrix init(dim,dim); //initial chip config
   init=initializePile(chips,dim,dim);
+  maxOfPile=chips;
 
-  // cout << init << endl;
+
+  // std::cout << init << std::endl;
 
 //change to resize grid
-  stabilize(init,0);
-  
-  // cout<< init << endl;
+  stabilize(init,0, maxOfPile);
 
   std::ofstream ex1("ex1.txt");
   writeSand(init, ex1);
