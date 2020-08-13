@@ -13,10 +13,10 @@ Matrix initializePile(const int chips, const int dimx, const int dimy);
 double maxEntry(const Matrix& config);
 
 // topple each entry in matrix if allowed
-void topple(Matrix& sand, const int leak, double& max);
+void topple(Matrix& sand, const int leak);
 
 // stabilize sandpile
-void stabilize(Matrix& sand, const int leak, double& max);
+void stabilize(Matrix& sand, const int leak);
 
 // Output Sandpile
 void writeSand(const Matrix& sand, std::ostream & out);

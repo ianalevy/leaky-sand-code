@@ -15,7 +15,6 @@ int main()
 
   int chips; //total chips
   int dim; //size of initial config
-  double maxOfPile; //max of initial config;
 
   std::cout << "chips=" << std::endl;
   std::cin >> chips;
@@ -27,13 +26,12 @@ int main()
 
   Matrix init(dim,dim); //initial chip config
   init=initializePile(chips,dim,dim);
-  maxOfPile=chips;
 
 
   // std::cout << init << std::endl;
 
 //change to resize grid
-  stabilize(init,0, maxOfPile);
+  stabilize(init,0);
 
   std::ofstream ex1("ex1.txt");
   writeSand(init, ex1);
