@@ -5,6 +5,8 @@
 
 #include "utility.h"
 
+class Matrix;
+typedef Matrix* MatrixPtr;
 class Matrix{
   // This is a row x col matrix
  int row, col;
@@ -43,6 +45,7 @@ public:
  friend Matrix transpose(const Matrix&); // return A^T
  friend Matrix abs(const Matrix&); // take abs of entries
  friend Matrix solve(const Matrix& A, const Matrix& y); // solve Ax=y
+ friend Matrix pad(const Matrix& A, const int n); // pad A on all sides with n rows and n cols
 };
 
 std::ostream& operator<<(std::ostream& os, const Matrix& A);

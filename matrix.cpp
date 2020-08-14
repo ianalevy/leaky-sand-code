@@ -152,6 +152,15 @@ Matrix solve(const Matrix& A, const Matrix& B){
 
 }
 
+Matrix pad(const Matrix& A, const int n) // pad A on all sides with n rows and n cols
+{ Matrix C(A.row+2*n, A.col+2*n);
+ int i,j;
+ for(i=0; i<A.row; i++)
+    for(j=0; j<A.col; j++)
+       C.m[(i+n)*C.col + (j+n)]=A.m[i*A.col + j];
+ return C;
+}
+
 TridiagonalMatrix::TridiagonalMatrix
 ( int r, double bv, double dv, double av )
 {
