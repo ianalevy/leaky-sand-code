@@ -5,6 +5,14 @@
 
 #include "utility.h"
 #include "matrix.h"
+
+// sandpile problem 
+struct SandpileProb 
+{
+    Matrix sand; //sandpile
+    Matrix stencil; //firing pattern
+    int leak; //chips which leak each fire
+};
  
 // initialize sandpile
 Matrix initializePile(const int chips, const int dimx, const int dimy);
@@ -19,10 +27,7 @@ double maxBdry(const Matrix& config);
 void topple(Matrix& sand, const int leak);
 
 // stabilize sandpile
-void stabilize(Matrix& sand, const int leak);
-
-// stabilize sandpile
-MatrixPtr stabilizeDyn(MatrixPtr sand, const int leak);
+MatrixPtr stabilize(MatrixPtr sand, const int leak);
 
 // Output Sandpile
 void writeSand(const Matrix& sand, std::ostream & out);

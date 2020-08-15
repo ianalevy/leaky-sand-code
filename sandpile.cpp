@@ -89,7 +89,7 @@ do{
 
 }
 
-MatrixPtr stabilizeDyn(MatrixPtr sand, const int leak)
+MatrixPtr stabilize(MatrixPtr sand, const int leak)
 {
 const int thresh=leak+4;
 int max; int row; int col;
