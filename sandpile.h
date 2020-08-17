@@ -12,8 +12,9 @@ using std::vector;
 #include "utility.h"
 #include "matrix.h"
 
-class SandpileData{
-  // This is a row x col matrix
+int ipow (int x, int p); //x^p for integers
+
+class SandpileData{//all info for sandpile with delta mass at origin
  int chips;
  MatrixPtr stencil;
  int leak;

@@ -1,6 +1,12 @@
 //sandpile.cpp
 #include "sandpile.h"
 
+int ipow (int x, int p) {//x^p for integers
+  int i = 1;
+  for (int j = 1; j <= p; j++)  i *= x;
+  return i;
+}
+
 SandpileData::SandpileData(int c, MatrixPtr S, int l){ // set up sandpile
    chips=c;
    stencil =S;

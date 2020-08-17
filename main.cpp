@@ -19,11 +19,14 @@ int main()
 {
 
   int chips; //total chips
+  int n;
   int dim=3; //size of initial config
 
-  // std::cout << "chips=" << std::endl;
-  // std::cin >> chips;
-  chips=10000;
+  cout << "Chips=10^n. Enter n=" << endl;
+  cin >> n;
+  // n=3;
+  chips= ipow(10,n);
+  cout << "Chips=" << chips << endl;
 
 // stencil 
   Matrix A(3,3); //enter n,e,s,w
