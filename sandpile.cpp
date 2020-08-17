@@ -116,6 +116,42 @@ double maxBdry(const Matrix& sand)
     return (max);
 }
 
+vector<double> maxBdryVec(const Matrix& sand)
+{   int rows; rows=sand.Row();
+    int cols; cols=sand.Col();
+
+    vector<double> maxv(4);
+
+    double top(sand(0,0));
+    double rt(sand(0,cols-1));
+    double bot(sand(rows-1,0));
+    double lt(sand(0,0));
+
+    int s1; int s2;
+
+    for (int i=0;i<cols;i++){
+        s1= sand(0,i);
+        s2=sand(rows-1,i);
+        if (top < s1) {top = s1;}
+        if (bot < s2) {bot =s2;}
+    }
+
+    for (int i=0;i<cols;i++){
+        s1= sand(i,0);
+        s2=sand(i,cols-1);
+        if (lt < s1) {lt = s1;}
+        if (rt < s2) {rt =s2;}
+    }
+
+
+    maxv[1]=top; 
+    maxv[2]=rt;
+    maxv[3]=bot;
+    maxv[4]=lt;
+
+    return (maxv);
+}
+
 void topple(Matrix& sand, const int leak){
 int rows; rows=sand.Row();
 int cols; cols=sand.Col();
@@ -138,6 +174,87 @@ for (int i=1; i<rows-1; i++){
 }
 }
 
+void resize(MatrixPtr& sand, const int thresh){//resize sandpile
+int row; int col;
+row = sand -> Row();
+col = sand -> Col();
+MatrixPtr big;
+int s=2; // pad with s in each direction
+
+vector<double> maxv(4);
+maxv = maxBdryVec(*sand);
+int topm, rtm, botm, ltm;
+topm=maxv[1]; rtm=maxv[2]; botm=maxv[3]; ltm=maxv[4];
+
+if (topm>=thresh && rtm >=thresh && botm >=thresh && ltm >=thresh){//symmetric resize
+    big = new Matrix(row+2*s,col+2*s);
+    *big = padDir(*sand,s,s,s,s);
+
+    delete sand;
+    sand = new Matrix(*big);
+}
+
+else if (topm>=thresh && rtm >=thresh){//ne resize
+    big = new Matrix(row+s,col+s);
+    *big = padDir(*sand,s,s,0,0);
+
+    delete sand;
+    sand = new Matrix(*big);
+}
+
+else if (topm>=thresh && rtm >=thresh && ltm>=thresh){//3 direction resize
+    big = new Matrix(row+s,col+s);
+    *big = padDir(*sand,s,s,0,s);
+
+    delete sand;
+    sand = new Matrix(*big);
+}
+
+else{ //general resize
+    if (topm>=thresh){
+    row = sand -> Row();
+    col = sand -> Col();    
+
+    big = new Matrix(row+s,col);
+    *big = padDir(*sand,s,0,0,0);
+
+    delete sand;
+    sand = new Matrix(*big);
+    }
+
+    if (rtm>=thresh){
+     row = sand -> Row();
+     col = sand -> Col();
+     big = new Matrix(row,col+s);
+     *big = padDir(*sand,0,s,0,0);
+
+     delete sand;
+     sand = new Matrix(*big);
+    }
+
+    if (botm>=thresh){
+     row = sand -> Row();
+     col = sand -> Col();
+     big = new Matrix(row+s,col);
+     *big = padDir(*sand,0,0,s,0);
+
+     delete sand;
+     sand = new Matrix(*big);
+    }
+
+    if (ltm>=thresh){
+     row = sand -> Row();
+     col = sand -> Col();        
+     big = new Matrix(row,col+s);
+     *big = padDir(*sand,0,0,0,s);
+
+     delete sand;
+     sand = new Matrix(*big);
+    }
+}
+
+}
+
 void stabilize(SandpileData& sand)
 {
 const int thresh=sand.Leak()+4;
@@ -148,21 +265,11 @@ col= sand.Init() -> Col();
 const int addRows=2;
 
 MatrixPtr sandCur = new Matrix(*sand.Init());
-MatrixPtr sandUp = new Matrix(*sandCur);
 
 do{
-    if(maxBdry(*sandCur)>=thresh){ //resize grid
-        delete sandUp;
-        sandUp = new Matrix(row+2*size*addRows,col+2*size*addRows);
-        *sandUp = pad(*sandCur, addRows);
-
-        delete sandCur;
-        sandCur = new Matrix(*sandUp);
-        *sandCur = *sandUp;
-
-        size +=1;
-    }
+    resize(sandCur,thresh);
     topple(*sandCur,sand.Leak());
+ 
     max= maxEntry(*sandCur);
 } while (max>= thresh);
 

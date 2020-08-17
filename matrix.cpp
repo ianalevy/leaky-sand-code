@@ -167,6 +167,21 @@ n cols on the left, and n cols on the right */
  return C;
 }
 
+Matrix padDir(const Matrix& A,const int top, const int rt, const int bot, const int lt)
+{// pad A on each side with top, rt, bot lt rows
+ int ar = A.row; int ac = A.col;
+ Matrix C(ar+top+bot,ac+rt+lt);
+ int i,j;
+
+  for(i=0; i<ar; i++){
+    for(j=0; j<ac; j++){
+       C.m[(i+top)*C.col + (j+lt)]=A.m[i*A.col + j];
+      }
+    }
+ return C;
+
+ }
+
 TridiagonalMatrix::TridiagonalMatrix
 ( int r, double bv, double dv, double av )
 {

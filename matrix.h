@@ -46,6 +46,9 @@ public:
  friend Matrix abs(const Matrix&); // take abs of entries
  friend Matrix solve(const Matrix& A, const Matrix& y); // solve Ax=y
  friend Matrix pad(const Matrix& A, const int n); // pad A on all sides with n rows and n cols
+ friend Matrix padDir(const Matrix& A, 
+ const int top, const int rt, const int bot, const int lt); 
+ // pad A on each side with top, rt, bot lt rows
 };
 
 std::ostream& operator<<(std::ostream& os, const Matrix& A);

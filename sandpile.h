@@ -3,9 +3,11 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <vector>
 using std::string;
 using std::cout;
 using std::endl;
+using std::vector;
 
 #include "utility.h"
 #include "matrix.h"
@@ -46,8 +48,14 @@ double maxEntry(const Matrix& config);
 // max of matrix on bdry
 double maxBdry(const Matrix& config);
 
+// max in each direction of matrix on bdry
+vector<double> maxBdryVec(const Matrix& config);
+
 // topple each entry in matrix if allowed
 void topple(Matrix& sand, const int leak);
+
+//resize sandpile if max reached
+void resize(MatrixPtr& sand, const int thresh);
 
 // stabilize sandpile
 void stabilize(SandpileData& sand);
