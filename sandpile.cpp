@@ -195,6 +195,17 @@ col = sand -> Col();
 MatrixPtr big;
 int s=2; // pad with s in each direction
 
+// this speeds up code in uniform case. why?
+/*
+if(maxBdry(*sand)>=thresh){
+big = new Matrix(row+2*s,col+2*s);
+*big = pad(*sand,s);
+
+delete sand;
+sand = new Matrix(*big);
+}
+*/
+
 vector<double> maxv(4);
 maxv = maxBdryVec(*sand);
 int topm, rtm, botm, ltm;
@@ -211,6 +222,7 @@ big = new Matrix(row+nt+nb,col+nr+nl);
 
 delete sand;
 sand = new Matrix(*big);
+
 }
 
 void stabilize(SandpileData& sand)

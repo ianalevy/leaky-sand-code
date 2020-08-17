@@ -21,17 +21,17 @@ int main()
   int chips; //total chips
   int dim=3; //size of initial config
 
-  std::cout << "chips=" << std::endl;
-  std::cin >> chips;
-  // chips=15;
+  // std::cout << "chips=" << std::endl;
+  // std::cin >> chips;
+  chips=100;
 
 // stencil 
   Matrix A(3,3); //enter n,e,s,w
-  A(0,1)=1; A(1,2)=1; A(2,1)=1; A(1,0)=0; 
+  A(0,1)=1; A(1,2)=1; A(2,1)=1; A(1,0)=1; 
 
   MatrixPtr sten = new Matrix(A);
 
-  SandpileData ex1(chips,sten,1); 
+  SandpileData ex1(chips,sten,0); 
   // cout << *ex1.Stab() << endl; //initial pile
 
   auto start = std::chrono::steady_clock::now();
