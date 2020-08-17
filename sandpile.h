@@ -50,9 +50,6 @@ double maxBdry(const Matrix& config);
 void topple(Matrix& sand, const int leak);
 
 // stabilize sandpile
-MatrixPtr stabilize(MatrixPtr sand, const int leak);
-
-// stabilize sandpile
 void stabilize(SandpileData& sand);
 
 // Output Sandpile

@@ -42,21 +42,22 @@ int main()
   std::chrono::duration<double> elapsed_seconds = end-start;
   cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
 
-  // cout << *ex1.Stab() << endl; //final pile
+  cout << *ex1.Stab() << endl; //final pile
 
-  cout << fileName(ex1) << endl;
 
-  // std::ofstream out1("out1.txt");
-  // writeSand(*ex1.Stab(), out1);
-  // out1.close();
+
+  std::ofstream out1("out1.txt");
+  writeSand(*ex1.Stab(), out1);
+  out1.close();
 
   // std::ofstream out1("./data/out1.txt");
   // writeSand(*ex1.Stab(), out1);
   // out1.close();
 
-  std::ofstream out1(fileName(ex1));
-  writeSand(*ex1.Stab(), out1);
-  out1.close();
+  // cout << fileName(ex1) << endl;
+  // std::ofstream out1(fileName(ex1));
+  // writeSand(*ex1.Stab(), out1);
+  // out1.close();
 
 return 0;
 }

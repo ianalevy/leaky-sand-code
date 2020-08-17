@@ -138,55 +138,6 @@ for (int i=1; i<rows-1; i++){
 }
 }
 
-void stabilize(Matrix& sand, const int leak)
-{
-const int thresh=leak+4;
-int max;
-
-do{
-    topple(sand,leak);
-    max= maxEntry(sand);
-} while (max>= thresh);
-
-}
-
-MatrixPtr stabilize(MatrixPtr sand, const int leak)
-{
-const int thresh=leak+4;
-int max; int row; int col;
-int size=1;
-row= sand -> Row();
-col= sand -> Col();
-const int addRows=2;
-
-MatrixPtr sandCur;
-sandCur = new Matrix(row,col);
-*sandCur = Matrix(*sand);
-
-MatrixPtr sandUp;
-sandUp = new Matrix(row,col);
-*sandUp = Matrix(*sand);
-
-
-do{
-    if(maxBdry(*sandCur)>=thresh){
-        delete sandUp;
-        sandUp = new Matrix(row+2*size*addRows,col+2*size*addRows);
-        *sandUp = pad(*sandCur, addRows);
-
-        delete sandCur;
-        sandCur = new Matrix(*sandUp);
-        *sandCur = *sandUp;
-
-        size +=1;
-    }
-    topple(*sandCur,leak);
-    max= maxEntry(*sandCur);
-} while (max>= thresh);
-
-return(sandCur);
-}
-
 void stabilize(SandpileData& sand)
 {
 const int thresh=sand.Leak()+4;
