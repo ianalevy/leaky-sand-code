@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include <vector>
 #include <string>
 
@@ -9,31 +10,53 @@
 #include <fstream>
 #include <algorithm>
 
+using std::string;
+using std::cout;
+using std::endl;
+using std:: cin;
+
 int main()
 {
 
   int chips; //total chips
   int dim=3; //size of initial config
 
-  std::cout << "chips=" << std::endl;
-  std::cin >> chips;
-  // chips=15;
+  // std::cout << "chips=" << std::endl;
+  // std::cin >> chips;
+  chips=15;
 
-  Matrix init(dim,dim); //initial chip config
+// stencil 
+  Matrix A(3,3);
+  A(0,1)=1; A(2,1)=1;
+  A(1,0)=1; A(1,2)=1;
 
-  MatrixPtr initPtr;
-  initPtr=new Matrix(init);
-  initPtr=&init;
+  MatrixPtr sten = new Matrix(A);
 
-  init=initializePile(chips,dim,dim);
-  initPtr=stabilize(initPtr,0);
+  SandpileData ex1(100,sten,1); 
+  // cout << *ex1.Stab() << endl; //initial pile
 
-  // std::cout << init << std::endl;
-  // std::cout << *initPtr << std::endl;
+  auto start = std::chrono::steady_clock::now();
+  stabilize(ex1);
+  auto end = std::chrono::steady_clock::now();
 
-  std::ofstream ex1("ex1.txt");
-  writeSand(*initPtr, ex1);
-  ex1.close();
+  std::chrono::duration<double> elapsed_seconds = end-start;
+  cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
+
+  // cout << *ex1.Stab() << endl; //final pile
+
+  cout << fileName(ex1) << endl;
+
+  // std::ofstream out1("out1.txt");
+  // writeSand(*ex1.Stab(), out1);
+  // out1.close();
+
+  // std::ofstream out1("./data/out1.txt");
+  // writeSand(*ex1.Stab(), out1);
+  // out1.close();
+
+  std::ofstream out1(fileName(ex1));
+  writeSand(*ex1.Stab(), out1);
+  out1.close();
 
 return 0;
 }

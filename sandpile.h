@@ -2,18 +2,41 @@
 
 #include <cmath>
 #include <iostream>
+#include <string>
+using std::string;
+using std::cout;
+using std::endl;
 
 #include "utility.h"
 #include "matrix.h"
 
-// sandpile problem 
-struct SandpileProb 
-{
-    Matrix sand; //sandpile
-    Matrix stencil; //firing pattern
-    int leak; //chips which leak each fire
-};
+class SandpileData{
+  // This is a row x col matrix
+ int chips;
+ MatrixPtr stencil;
+ int leak;
+ MatrixPtr init;
+ MatrixPtr stab;
+
+public:
+ SandpileData(int c , MatrixPtr S, int l);       // constructors and destructors
+ SandpileData( const SandpileData& ); //copy constructor
+ ~SandpileData( ); //Destructor
+
+ SandpileData& operator=( const SandpileData& B);   // *this=B
+
+ int Chips() const  {return chips;}
+ int Leak() const {return leak;}
+ MatrixPtr Stencil() const {return stencil;} 
+ MatrixPtr Init() const {return init;}
+ MatrixPtr Stab() const {return stab;}
+
+ void SetStab(MatrixPtr& A); 
+
+ friend string fileName(const SandpileData& A); //write file name
  
+};
+
 // initialize sandpile
 Matrix initializePile(const int chips, const int dimx, const int dimy);
 
@@ -28,6 +51,9 @@ void topple(Matrix& sand, const int leak);
 
 // stabilize sandpile
 MatrixPtr stabilize(MatrixPtr sand, const int leak);
+
+// stabilize sandpile
+void stabilize(SandpileData& sand);
 
 // Output Sandpile
 void writeSand(const Matrix& sand, std::ostream & out);
