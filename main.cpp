@@ -23,7 +23,7 @@ int main()
 
   // std::cout << "chips=" << std::endl;
   // std::cin >> chips;
-  chips=100;
+  chips=10000;
 
 // stencil 
   Matrix A(3,3); //enter n,e,s,w

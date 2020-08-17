@@ -193,7 +193,7 @@ int row; int col;
 row = sand -> Row();
 col = sand -> Col();
 MatrixPtr big;
-int s=2; // pad with s in each direction
+int s=1; // pad with s in each direction
 
 // this speeds up code in uniform case. why?
 /*
@@ -228,7 +228,13 @@ sand = new Matrix(*big);
 void stabilize(SandpileData& sand)
 {  
 const int thresh=sand.Leak()+sand.Sent();
-int max; 
+int max=0;
+int iter=0; 
+int row; int col;
+row = sand.Init() -> Row();
+col = sand.Init() -> Col();
+int nrow=row; int ncol=col;
+int count=1000;
 
 MatrixPtr sandCur = new Matrix(*sand.Init());
 
@@ -237,6 +243,16 @@ do{
     topple(*sandCur,*sand.Stencil(),sand.Leak());
  
     max= maxEntry(*sandCur);
+
+    iter++;
+    nrow = sandCur->Row();
+    ncol = sandCur->Col();
+    if (iter%count==0){
+        cout << "Iters=" << iter << endl;
+        cout << "rowsxcols=" << nrow << "x" << ncol << endl;
+    }
+
+
 } while (max>= thresh);
 
 //update final config;
