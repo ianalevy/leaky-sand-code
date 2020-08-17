@@ -32,6 +32,7 @@ public:
  MatrixPtr Stencil() const {return stencil;} 
  MatrixPtr Init() const {return init;}
  MatrixPtr Stab() const {return stab;}
+ int Sent(); //chips sent out
 
  void SetStab(MatrixPtr& A); 
 
@@ -52,7 +53,7 @@ double maxBdry(const Matrix& config);
 vector<double> maxBdryVec(const Matrix& config);
 
 // topple each entry in matrix if allowed
-void topple(Matrix& sand, const int leak);
+void topple(Matrix& sand, Matrix& sten, const int leak);
 
 //resize sandpile if max reached
 void resize(MatrixPtr& sand, const int thresh);
