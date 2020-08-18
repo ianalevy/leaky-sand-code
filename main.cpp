@@ -21,7 +21,7 @@ int main()
   int chips; //total chips as pow 10
   int ichips; //inital chips as pow 10
 
-  cout << "start chips=10^n. For n<=30 enter n=" << endl;
+  cout << "start chips=10^n. For n<=9 enter n=" << endl;
   cin >> ichips;
   cout << "total chips=10^m. Enter m=" << endl;
   cin >> chips;
@@ -33,7 +33,7 @@ int main()
   A(0,1)=1; A(1,2)=1; A(2,1)=1; A(1,0)=1; 
   MatrixPtr sten = new Matrix(A);
 
-  SandpileData ex1(chips,ichips,sten,1); 
+  SandpileData ex1(chips,ichips,1,sten,0); 
 
   auto start = std::chrono::steady_clock::now();
   stabilize(ex1);

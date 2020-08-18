@@ -7,9 +7,10 @@ int ipow (int x, int p) {//x^p for integers
   return i;
 }
 
-SandpileData::SandpileData(int c, int ci, MatrixPtr S, int l){ // set up sandpile
+SandpileData::SandpileData(int c, int ci, int b, MatrixPtr S, int l){ // set up sandpile
    chips=c;
    initChips=ci;
+   bht=b;
    stencil =S;
    leak=l;
    Matrix A(3,3); A(1,1)=ipow(10, ci);
@@ -22,6 +23,7 @@ SandpileData::SandpileData(int c, int ci, MatrixPtr S, int l){ // set up sandpil
  SandpileData::SandpileData(const SandpileData& A){ // build a sandpile from another one
    chips = A.chips;
    initChips=A.initChips;
+   bht=A.bht;
    delete stencil;
    stencil = new Matrix(*A.stencil);
    leak = A.leak;
@@ -40,6 +42,7 @@ SandpileData::SandpileData(int c, int ci, MatrixPtr S, int l){ // set up sandpil
 SandpileData& SandpileData::operator=( const SandpileData& B){   // *this=B
    chips=B.chips;
    initChips=B.initChips;
+   bht=B.bht;
    delete stencil;
    stencil = new Matrix(*B.stencil);
    leak=B.leak;
@@ -170,7 +173,7 @@ vector<double> maxBdryVec(const Matrix& sand)
     return (maxv);
 }
 
-void topple(Matrix& sand, Matrix& sten, const int leak){
+void topple(Matrix& sand, Matrix& sten, const int leak, const int bht){
 int rows; rows=sand.Row();
 int cols; cols=sand.Col();
 int site; int upSite;
@@ -184,10 +187,10 @@ const int thresh=leak+c;
 
 for (int i=1; i<rows-1; i++){
     for (int j=1; j<cols-1; j++){
-        site=sand(i,j);
+        site=sand(i,j)-bht; //account for background height
         if(site>= thresh) {
             give=floor(site/(thresh));
-            sand(i,j)= site%thresh;
+            sand(i,j)= site%thresh+bht; //also for bht
             sand(i+1,j)+=cn*give;
             sand(i-1,j)+=cs*give;
             sand(i,j+1)+=ce*give;
@@ -235,7 +238,7 @@ sand = new Matrix(*big);
 }
 
 void stabilize(SandpileData &sand){
- const int thresh = sand.Leak() + sand.Sent();
+ const int thresh = sand.Leak() + sand.Sent(); 
  int max = 0;
  int iter = 0;
  int row; int col;
@@ -248,11 +251,11 @@ void stabilize(SandpileData &sand){
  MatrixPtr sandCur = new Matrix(*sand.Init());
 
  for (int i=chips10i; i<=chips10f; i++) {
-     max = maxEntry(*sandCur);
+     max = maxEntry(*sandCur); 
 
-     while (max >= thresh){
+     while (max >= (thresh+sand.Bht())){ //account for background ht
          resize(sandCur, thresh);
-         topple(*sandCur, *sand.Stencil(), sand.Leak());
+         topple(*sandCur, *sand.Stencil(), sand.Leak(), sand.Bht());
          max = maxEntry(*sandCur);
 
          iter++;
@@ -264,6 +267,13 @@ void stabilize(SandpileData &sand){
             }
         }
      if (i<chips10f){ *sandCur = 10*(*sandCur);}
+ }
+
+ //subtract bht
+ for (int i=0; i<nrow; i++){
+     for(int j=0; j<ncol; j++){
+         (*sandCur)(i,j) =(*sandCur)(i,j) - sand.Bht();
+     }
  }
 
  //update final config;
