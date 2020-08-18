@@ -23,7 +23,7 @@ class SandpileData{//all info for sandpile with delta mass at origin
  MatrixPtr init;
  MatrixPtr stab;
 
-public:
+public: //total chips, init chips, background ht, stencil, leak
  SandpileData(int c , int ci, int b, MatrixPtr S, int l);       // constructors and destructors
  SandpileData( const SandpileData& ); //copy constructor
  ~SandpileData( ); //Destructor

@@ -33,7 +33,7 @@ int main()
   A(0,1)=1; A(1,2)=1; A(2,1)=1; A(1,0)=1; 
   MatrixPtr sten = new Matrix(A);
 
-  SandpileData ex1(chips,ichips,1,sten,0); 
+  SandpileData ex1(chips,ichips,0,sten,0); 
 
   auto start = std::chrono::steady_clock::now();
   stabilize(ex1);
