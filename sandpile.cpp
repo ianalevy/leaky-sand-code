@@ -7,11 +7,12 @@ int ipow (int x, int p) {//x^p for integers
   return i;
 }
 
-SandpileData::SandpileData(int c, MatrixPtr S, int l){ // set up sandpile
+SandpileData::SandpileData(int c, int ci, MatrixPtr S, int l){ // set up sandpile
    chips=c;
+   initChips=ci;
    stencil =S;
    leak=l;
-   Matrix A(3,3); A(1,1)=c;
+   Matrix A(3,3); A(1,1)=ipow(10, ci);
    MatrixPtr Aptr = new Matrix(A);
 
    init=Aptr;
@@ -20,6 +21,7 @@ SandpileData::SandpileData(int c, MatrixPtr S, int l){ // set up sandpile
 
  SandpileData::SandpileData(const SandpileData& A){ // build a sandpile from another one
    chips = A.chips;
+   initChips=A.initChips;
    delete stencil;
    stencil = new Matrix(*A.stencil);
    leak = A.leak;
@@ -37,6 +39,7 @@ SandpileData::SandpileData(int c, MatrixPtr S, int l){ // set up sandpile
 
 SandpileData& SandpileData::operator=( const SandpileData& B){   // *this=B
    chips=B.chips;
+   initChips=B.initChips;
    delete stencil;
    stencil = new Matrix(*B.stencil);
    leak=B.leak;
@@ -231,38 +234,40 @@ sand = new Matrix(*big);
 
 }
 
-void stabilize(SandpileData& sand)
-{  
-const int thresh=sand.Leak()+sand.Sent();
-int max=0;
-int iter=0; 
-int row; int col;
-row = sand.Init() -> Row();
-col = sand.Init() -> Col();
-int nrow=row; int ncol=col;
-int count=1000;
+void stabilize(SandpileData &sand){
+ const int thresh = sand.Leak() + sand.Sent();
+ int max = 0;
+ int iter = 0;
+ int row; int col;
+ row = sand.Init()->Row(); col = sand.Init()->Col();
+ int nrow = row; int ncol = col;
+ int count = 1000;
+ int chips10i = sand.InitChips();
+ int chips10f = sand.Chips();
 
-MatrixPtr sandCur = new Matrix(*sand.Init());
+ MatrixPtr sandCur = new Matrix(*sand.Init());
 
-do{
-    resize(sandCur,thresh);
-    topple(*sandCur,*sand.Stencil(),sand.Leak());
- 
-    max= maxEntry(*sandCur);
+ for (int i=chips10i; i<=chips10f; i++) {
+     max = maxEntry(*sandCur);
 
-    iter++;
-    nrow = sandCur->Row();
-    ncol = sandCur->Col();
-    if (iter%count==0){
-        cout << "Iters=" << iter << endl;
-        cout << "rowsxcols=" << nrow << "x" << ncol << endl;
-    }
+     while (max >= thresh){
+         resize(sandCur, thresh);
+         topple(*sandCur, *sand.Stencil(), sand.Leak());
+         max = maxEntry(*sandCur);
 
+         iter++;
+         nrow = sandCur->Row();
+         ncol = sandCur->Col();
+         if (iter % count == 0){
+             cout << "Iters=" << iter << endl;
+             cout << "rowsxcols=" << nrow << "x" << ncol << endl;
+            }
+        }
+     if (i<chips10f){ *sandCur = 10*(*sandCur);}
+ }
 
-} while (max>= thresh);
-
-//update final config;
-sand.SetStab(sandCur);
+ //update final config;
+ sand.SetStab(sandCur);
 }
 
 //Output sandpile

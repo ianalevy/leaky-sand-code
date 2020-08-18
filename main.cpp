@@ -18,24 +18,22 @@ using std:: cin;
 int main()
 {
 
-  int chips; //total chips
-  int n;
-  int dim=3; //size of initial config
+  int chips; //total chips as pow 10
+  int ichips; //inital chips as pow 10
 
-  cout << "Chips=10^n. Enter n=" << endl;
-  cin >> n;
-  // n=3;
-  chips= ipow(10,n);
-  cout << "Chips=" << chips << endl;
+  cout << "start chips=10^n. For n<=30 enter n=" << endl;
+  cin >> ichips;
+  cout << "total chips=10^m. Enter m=" << endl;
+  cin >> chips;
+
+  // ichips=2; chips=5;
 
 // stencil 
   Matrix A(3,3); //enter n,e,s,w
   A(0,1)=1; A(1,2)=1; A(2,1)=1; A(1,0)=1; 
-
   MatrixPtr sten = new Matrix(A);
 
-  SandpileData ex1(chips,sten,0); 
-  // cout << *ex1.Stab() << endl; //initial pile
+  SandpileData ex1(chips,ichips,sten,1); 
 
   auto start = std::chrono::steady_clock::now();
   stabilize(ex1);

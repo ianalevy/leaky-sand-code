@@ -15,20 +15,22 @@ using std::vector;
 int ipow (int x, int p); //x^p for integers
 
 class SandpileData{//all info for sandpile with delta mass at origin
- int chips;
+ int chips; //total chips as power of 10
+ int initChips; //chips to start with as power of 10
  MatrixPtr stencil;
  int leak;
  MatrixPtr init;
  MatrixPtr stab;
 
 public:
- SandpileData(int c , MatrixPtr S, int l);       // constructors and destructors
+ SandpileData(int c , int ci, MatrixPtr S, int l);       // constructors and destructors
  SandpileData( const SandpileData& ); //copy constructor
  ~SandpileData( ); //Destructor
 
  SandpileData& operator=( const SandpileData& B);   // *this=B
 
  int Chips() const  {return chips;}
+ int InitChips() const  {return initChips;}
  int Leak() const {return leak;}
  MatrixPtr Stencil() const {return stencil;} 
  MatrixPtr Init() const {return init;}
