@@ -17,13 +17,14 @@ int ipow (int x, int p); //power
 class SandpileData{//all info for sandpile with delta mass at origin
  int chips; //total chips as power of 10
  int initChips; //chips to start with as power of 10
+ int bht; // background height is negative bht
  MatrixPtr stencil;
  double leak;
  MatrixPtr init;
  MatrixPtr stab;
 
-public:
- SandpileData(int c , int ci, MatrixPtr S, double l);       // constructors and destructors
+public: //total chips, init chips, background ht, stencil, leak
+ SandpileData(int c , int ci, int b, MatrixPtr S, int l);       // constructors and destructors
  SandpileData( const SandpileData& ); //copy constructor
  ~SandpileData( ); //Destructor
 
@@ -31,6 +32,7 @@ public:
 
  int Chips() const  {return chips;}
  int InitChips() const  {return initChips;}
+ int Bht() const {return bht;}
  double Leak() const {return leak;}
  MatrixPtr Stencil() const {return stencil;} 
  MatrixPtr Init() const {return init;}
@@ -56,7 +58,8 @@ double maxBdry(const Matrix& config);
 vector<double> maxBdryVec(const Matrix& config);
 
 // topple each entry in matrix if allowed
-void topple(Matrix& sand, Matrix& sten, const double leak);
+//input sandpile, firing stencil, chips which leak out, background height
+void topple(Matrix& sand, Matrix& sten, const double leak, const int bht);
 
 //resize sandpile if max reached
 void resize(MatrixPtr& sand, const double thresh);
