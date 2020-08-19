@@ -74,11 +74,20 @@ double SandpileData::Sent(){//chips sent out
     int east = s(1,2);
     int south = s(2,1);
     int west = s(1,0);
-    double logleak = round(log10(A.leak));
+    int logleak;
+    string logstring;
+    if(A.leak< 1e-15){
+        logleak=0;
+        logstring = "L" + std::to_string(logleak);
+    }
+    else{
+        logleak=round(log10(A.leak));
+        logstring = "L10^" + std::to_string(logleak);
+    }
 
     string name = "./data/";
     name += "C10^"+ std::to_string(A.chips) 
-     + "L10^-" + std::to_string(logleak)
+     + logstring
      + "Bht" + std::to_string(A.bht)
      +"N" + std::to_string(north) +"E" + std::to_string(east) 
      +"S" + std::to_string(south) + "W" + std::to_string(west);
