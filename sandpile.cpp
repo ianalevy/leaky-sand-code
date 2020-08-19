@@ -7,7 +7,7 @@ int ipow (int x, int p) {//x^p for integers
   return i;
 }
 
-SandpileData::SandpileData(int c, int ci, int b, MatrixPtr S, int l){ // set up sandpile
+SandpileData::SandpileData(int c, int ci, int b, MatrixPtr S, double l){ // set up sandpile
    chips=c;
    initChips=ci;
    bht=b;
@@ -74,12 +74,11 @@ double SandpileData::Sent(){//chips sent out
     int east = s(1,2);
     int south = s(2,1);
     int west = s(1,0);
-    int leak = A.leak;
-    // logleak = round(log10(A.leak));
+    double logleak = round(log10(A.leak));
 
     string name = "./data/";
     name += "C10^"+ std::to_string(A.chips) 
-     + "L" + std::to_string(A.leak)
+     + "L10^-" + std::to_string(logleak)
      + "Bht" + std::to_string(A.bht)
      +"N" + std::to_string(north) +"E" + std::to_string(east) 
      +"S" + std::to_string(south) + "W" + std::to_string(west);
