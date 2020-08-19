@@ -220,7 +220,7 @@ if(maxBdry(*sand)>=thresh){
  sand = new Matrix(*big);
 }
 
-/*
+/* // there is a bug here!!!!!! some kind of memory leak?
 vector<double> maxv(4);
 maxv = maxBdryVec(*sand);
 int topm, rtm, botm, ltm;
