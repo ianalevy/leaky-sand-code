@@ -231,7 +231,7 @@ if(maxBdry(*sand)>=thresh){
  sand = new Matrix(*big);
 }
 
-/*
+/* //bug here
 vector<double> maxv(4);
 maxv = maxBdryVec(*sand);
 double topm, rtm, botm, ltm;
