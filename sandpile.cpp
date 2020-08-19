@@ -74,10 +74,13 @@ int SandpileData::Sent(){//chips sent out
     int east = s(1,2);
     int south = s(2,1);
     int west = s(1,0);
+    int leak = A.leak;
+    // logleak = round(log10(A.leak));
 
     string name = "./data/";
-    name += "Chips"+ std::to_string(A.chips) 
+    name += "Chips10^"+ std::to_string(A.chips) 
      + "Leak" + std::to_string(A.leak)
+     + "BackHt" + std::to_string(A.bht)
      +"N" + std::to_string(north) +"E" + std::to_string(east) 
      +"S" + std::to_string(south) + "W" + std::to_string(west);
     name+= ".txt";
