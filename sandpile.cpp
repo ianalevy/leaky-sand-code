@@ -78,9 +78,9 @@ int SandpileData::Sent(){//chips sent out
     // logleak = round(log10(A.leak));
 
     string name = "./data/";
-    name += "Chips10^"+ std::to_string(A.chips) 
-     + "Leak" + std::to_string(A.leak)
-     + "BackHt" + std::to_string(A.bht)
+    name += "C10^"+ std::to_string(A.chips) 
+     + "L" + std::to_string(A.leak)
+     + "Bht" + std::to_string(A.bht)
      +"N" + std::to_string(north) +"E" + std::to_string(east) 
      +"S" + std::to_string(south) + "W" + std::to_string(west);
     name+= ".txt";
@@ -211,16 +211,16 @@ MatrixPtr big;
 int s=1; // pad with s in each direction
 
 // this speeds up code in uniform case. why?
-/*
+
 if(maxBdry(*sand)>=thresh){
-big = new Matrix(row+2*s,col+2*s);
-*big = pad(*sand,s);
+ big = new Matrix(row+2*s,col+2*s);
+ *big = pad(*sand,s);
 
-delete sand;
-sand = new Matrix(*big);
+ delete sand;
+ sand = new Matrix(*big);
 }
-*/
 
+/*
 vector<double> maxv(4);
 maxv = maxBdryVec(*sand);
 int topm, rtm, botm, ltm;
@@ -237,7 +237,7 @@ big = new Matrix(row+nt+nb,col+nr+nl);
 
 delete sand;
 sand = new Matrix(*big);
-
+*/
 }
 
 void stabilize(SandpileData &sand){
