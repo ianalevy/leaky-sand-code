@@ -7,7 +7,7 @@ int ipow (int x, int p) {//x^p for integers
   return i;
 }
 
-SandpileData::SandpileData(int c, int ci, MatrixPtr S, int l){ // set up sandpile
+SandpileData::SandpileData(int c, int ci, MatrixPtr S, double l){ // set up sandpile
    chips=c;
    initChips=ci;
    stencil =S;
@@ -51,9 +51,9 @@ SandpileData& SandpileData::operator=( const SandpileData& B){   // *this=B
    return *this;
  }
 
-int SandpileData::Sent(){//chips sent out
+double SandpileData::Sent(){//chips sent out
      Matrix A(*stencil);
-     int c;
+     double c;
      c=A(0,1)+A(1,2)+A(2,1)+A(1,0);
     
     return(c);
@@ -97,7 +97,7 @@ double maxEntry(const Matrix& sand)
 {
     double max;
     max=sand(0,0);
-    int site;
+    double site;
 
     int rows; rows=sand.Row();
     int cols; cols=sand.Col();
@@ -115,7 +115,7 @@ double maxBdry(const Matrix& sand)
 {
     double max;
     max=sand(0,0);
-    int site;
+    double site;
 
     int rows; rows=sand.Row();
     int cols; cols=sand.Col();
@@ -145,7 +145,7 @@ vector<double> maxBdryVec(const Matrix& sand)
     double bot(sand(rows-1,0));
     double lt(sand(0,0));
 
-    int s1; int s2;
+    double s1; double s2;
 
     for (int i=0;i<cols;i++){
         s1= sand(0,i);
@@ -170,24 +170,25 @@ vector<double> maxBdryVec(const Matrix& sand)
     return (maxv);
 }
 
-void topple(Matrix& sand, Matrix& sten, const int leak){
+void topple(Matrix& sand, Matrix& sten, const double leak){
 int rows; rows=sand.Row();
 int cols; cols=sand.Col();
-int site; int upSite;
-int give; 
+double site;
+double give; //number of fires
 
-int cn=sten(0,1); int ce=sten(1,2); 
-int cs=sten(2,1); int cw=sten(1,0);
-int c=cn+ce+cs+cw;
+double cn=sten(0,1); double ce=sten(1,2); 
+double cs=sten(2,1); double cw=sten(1,0);
+double c=cn+ce+cs+cw;
 
-const int thresh=leak+c;
+const double thresh=leak+c;
 
 for (int i=1; i<rows-1; i++){
     for (int j=1; j<cols-1; j++){
         site=sand(i,j);
         if(site>= thresh) {
             give=floor(site/(thresh));
-            sand(i,j)= site%thresh;
+            // sand(i,j)= site%thresh;
+            sand(i,j)-=give*thresh;
             sand(i+1,j)+=cn*give;
             sand(i-1,j)+=cs*give;
             sand(i,j+1)+=ce*give;
@@ -197,7 +198,7 @@ for (int i=1; i<rows-1; i++){
 }
 }
 
-void resize(MatrixPtr& sand, const int thresh){//resize sandpile
+void resize(MatrixPtr& sand, const double thresh){//resize sandpile
 int row; int col;
 row = sand -> Row();
 col = sand -> Col();
@@ -217,7 +218,7 @@ sand = new Matrix(*big);
 
 vector<double> maxv(4);
 maxv = maxBdryVec(*sand);
-int topm, rtm, botm, ltm;
+double topm, rtm, botm, ltm;
 topm=maxv[1]; rtm=maxv[2]; botm=maxv[3]; ltm=maxv[4];
 
 int nt=0; int nr=0; int nb=0; int nl=0;
@@ -235,8 +236,8 @@ sand = new Matrix(*big);
 }
 
 void stabilize(SandpileData &sand){
- const int thresh = sand.Leak() + sand.Sent();
- int max = 0;
+ const double thresh = sand.Leak() + sand.Sent();
+ double max = 0;
  int iter = 0;
  int row; int col;
  row = sand.Init()->Row(); col = sand.Init()->Col();

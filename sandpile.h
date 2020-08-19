@@ -12,18 +12,18 @@ using std::vector;
 #include "utility.h"
 #include "matrix.h"
 
-int ipow (int x, int p); //x^p for integers
+int ipow (int x, int p); //power
 
 class SandpileData{//all info for sandpile with delta mass at origin
  int chips; //total chips as power of 10
  int initChips; //chips to start with as power of 10
  MatrixPtr stencil;
- int leak;
+ double leak;
  MatrixPtr init;
  MatrixPtr stab;
 
 public:
- SandpileData(int c , int ci, MatrixPtr S, int l);       // constructors and destructors
+ SandpileData(int c , int ci, MatrixPtr S, double l);       // constructors and destructors
  SandpileData( const SandpileData& ); //copy constructor
  ~SandpileData( ); //Destructor
 
@@ -31,11 +31,11 @@ public:
 
  int Chips() const  {return chips;}
  int InitChips() const  {return initChips;}
- int Leak() const {return leak;}
+ double Leak() const {return leak;}
  MatrixPtr Stencil() const {return stencil;} 
  MatrixPtr Init() const {return init;}
  MatrixPtr Stab() const {return stab;}
- int Sent(); //chips sent out
+ double Sent(); //chips sent out
 
  void SetStab(MatrixPtr& A); 
 
@@ -56,10 +56,10 @@ double maxBdry(const Matrix& config);
 vector<double> maxBdryVec(const Matrix& config);
 
 // topple each entry in matrix if allowed
-void topple(Matrix& sand, Matrix& sten, const int leak);
+void topple(Matrix& sand, Matrix& sten, const double leak);
 
 //resize sandpile if max reached
-void resize(MatrixPtr& sand, const int thresh);
+void resize(MatrixPtr& sand, const double thresh);
 
 // stabilize sandpile
 void stabilize(SandpileData& sand);
