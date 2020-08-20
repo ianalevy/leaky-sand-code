@@ -20,17 +20,18 @@ int main()
 
   int chips; //total chips as pow 10
   int ichips; //inital chips as pow 10
-  int leak; //chips which leak each fire 
+  int logleak;
+  double leak; //chips which leak each fire 
   int bht; //background height
 
   // cout << "start chips=10^n. For n<=9 enter n=" << endl;
   // cin >> ichips;
   ichips =3;
-  cout << "total chips=10^m. For m<=3 enter m=" << endl;
+  cout << "Total chips=10^m. For m<=3 enter m=" << endl;
   cin >> chips;
-  cout << "background height=" << endl;
+  cout << "Background height=" << endl;
   cin >> bht;
-  cout << "leak=" << endl;
+  cout << "Leak=" << endl;
   cin >> leak;
   cout << endl;
 
