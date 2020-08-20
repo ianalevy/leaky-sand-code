@@ -55,7 +55,7 @@ double maxEntry(const Matrix& config);
 double maxBdry(const Matrix& config);
 
 // max in each direction of matrix on bdry
-vector<double> maxBdryVec(const Matrix& config);
+void maxBdryVec(const Matrix& sand, double& top, double& rt, double& bot, double& lt);
 
 // topple each entry in matrix if allowed
 //input sandpile, firing stencil, chips which leak out, background height

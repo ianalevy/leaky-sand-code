@@ -148,16 +148,15 @@ double maxBdry(const Matrix& sand)
     return (max);
 }
 
-vector<double> maxBdryVec(const Matrix& sand)
+// max in each direction of matrix on bdry
+void maxBdryVec(const Matrix& sand, double& top, double& rt, double& bot, double& lt)
 {   int rows; rows=sand.Row();
     int cols; cols=sand.Col();
 
-    vector<double> maxv(4);
-
-    double top(sand(0,0));
-    double rt(sand(0,cols-1));
-    double bot(sand(rows-1,0));
-    double lt(sand(0,0));
+    top=sand(0,0);
+    rt=sand(0,cols-1);
+    bot=sand(rows-1,0);
+    lt=sand(0,0);
 
     double s1; double s2;
 
@@ -174,14 +173,6 @@ vector<double> maxBdryVec(const Matrix& sand)
         if (lt < s1) {lt = s1;}
         if (rt < s2) {rt =s2;}
     }
-
-
-    maxv[1]=top; 
-    maxv[2]=rt;
-    maxv[3]=bot;
-    maxv[4]=lt;
-
-    return (maxv);
 }
 
 // topple each entry in matrix if allowed
@@ -204,7 +195,7 @@ for (int i=1; i<rows-1; i++){
         if(site>= thresh) {
             give=floor(site/(thresh));
             // sand(i,j)= site%thresh+bht; //change for integer case
-            sand(i,j)-=give*thresh+bht;
+            sand(i,j)=site-give*thresh+bht;
             sand(i+1,j)+=cn*give;
             sand(i-1,j)+=cs*give;
             sand(i,j+1)+=ce*give;
@@ -223,19 +214,18 @@ int s=1; // pad with s in each direction
 
 // this speeds up code in uniform case. why?
 
-if(maxBdry(*sand)>=thresh){
- big = new Matrix(row+2*s,col+2*s);
- *big = pad(*sand,s);
+// if(maxBdry(*sand)>=thresh){
+//  big = new Matrix(row+2*s,col+2*s);
+//  *big = pad(*sand,s);
 
- delete sand;
- sand = new Matrix(*big);
-}
+//  delete sand;
+//  sand = new Matrix(*big);
+// }
 
-/* //bug here
-vector<double> maxv(4);
-maxv = maxBdryVec(*sand);
+
+//alternate if not symmetric. does this fix bug?
 double topm, rtm, botm, ltm;
-topm=maxv[1]; rtm=maxv[2]; botm=maxv[3]; ltm=maxv[4];
+maxBdryVec(*sand,topm,rtm,botm,ltm);
 
 int nt=0; int nr=0; int nb=0; int nl=0;
 if(topm >= thresh){nt=s;}
@@ -248,7 +238,7 @@ big = new Matrix(row+nt+nb,col+nr+nl);
 
 delete sand;
 sand = new Matrix(*big);
-*/
+
 }
 
 void stabilize(SandpileData &sand){
