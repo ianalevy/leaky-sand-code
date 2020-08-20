@@ -11,7 +11,7 @@ do for [fn in system("dir /b")] {
         set size square 1,1
 
         data=sprintf("%s",fn)
-        filename=sprintf("%s.pdf",name)
+        filename=sprintf("./pics/%s.pdf",name)
 
         set out filename
         plot data matrix with image
