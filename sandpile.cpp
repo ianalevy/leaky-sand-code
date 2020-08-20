@@ -229,7 +229,7 @@ int s=1; // pad with s in each direction
 // }
 
 
-//alternate if not symmetric. does this fix bug?
+//use if not symmetric. still a bug here with m=6 and bht=3
 double topm, rtm, botm, ltm;
 maxBdryVec(*sand,topm,rtm,botm,ltm);
 
@@ -239,12 +239,13 @@ if(rtm >= thresh){nr=s;}
 if(botm >= thresh){nb=s;}
 if(ltm >= thresh){nl=s;}
 
-big = new Matrix(row+nt+nb,col+nr+nl);
-*big = padDir(*sand,nt,nr,nb,nl);
+if( (nt>0) || (nr>0) || (nb>0) || (nl>0) ){
+ big = new Matrix(row+nt+nb,col+nr+nl);
+ *big = padDir(*sand,nt,nr,nb,nl);
 
-delete sand;
-sand = new Matrix(*big);
-
+ delete sand;
+ sand = new Matrix(*big);
+}
 }
 
 void stabilize(SandpileData &sand){
