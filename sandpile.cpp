@@ -218,8 +218,7 @@ col = sand -> Col();
 MatrixPtr big;
 int s=1; // pad with s in each direction
 
-// this speeds up code in uniform case. why?
-
+// works in uniform case only
 // if(maxBdry(*sand)>=thresh){
 //  big = new Matrix(row+2*s,col+2*s);
 //  *big = pad(*sand,s);
@@ -228,8 +227,6 @@ int s=1; // pad with s in each direction
 //  sand = new Matrix(*big);
 // }
 
-
-//use if not symmetric. still a bug here with m=6 and bht=3
 double topm, rtm, botm, ltm;
 maxBdryVec(*sand,topm,rtm,botm,ltm);
 
