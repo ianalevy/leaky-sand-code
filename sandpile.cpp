@@ -7,7 +7,7 @@ int ipow (int x, int p) {//x^p for integers
   return i;
 }
 
-SandpileData::SandpileData(int c, int ci, int b, MatrixPtr S, int l){ // set up sandpile
+SandpileData::SandpileData(int c, int ci, int b, MatrixPtr S, double l){ // set up sandpile
    chips=c;
    initChips=ci;
    bht=b;
@@ -54,9 +54,9 @@ SandpileData& SandpileData::operator=( const SandpileData& B){   // *this=B
    return *this;
  }
 
-int SandpileData::Sent(){//chips sent out
+double SandpileData::Sent(){//chips sent out
      Matrix A(*stencil);
-     int c;
+     double c;
      c=A(0,1)+A(1,2)+A(2,1)+A(1,0);
     
     return(c);
@@ -74,12 +74,26 @@ int SandpileData::Sent(){//chips sent out
     int east = s(1,2);
     int south = s(2,1);
     int west = s(1,0);
-    int leak = A.leak;
-    // logleak = round(log10(A.leak));
+    int logleak;
+    double dleak;
+    string leakstr;
+
+    if(A.leak< 1e-15){
+        logleak=0;
+        leakstr = "L" + std::to_string(logleak);
+    }
+    else if (1<A.leak){
+        dleak = A.leak;
+        leakstr = "L" + std::to_string(dleak);
+    }
+    else{
+        logleak=round(log10(A.leak));
+        leakstr = "L10^" + std::to_string(logleak);
+    }
 
     string name = "./data/";
     name += "C10^"+ std::to_string(A.chips) 
-     + "L" + std::to_string(A.leak)
+     + leakstr
      + "Bht" + std::to_string(A.bht)
      +"N" + std::to_string(north) +"E" + std::to_string(east) 
      +"S" + std::to_string(south) + "W" + std::to_string(west);
@@ -103,7 +117,7 @@ double maxEntry(const Matrix& sand)
 {
     double max;
     max=sand(0,0);
-    int site;
+    double site;
 
     int rows; rows=sand.Row();
     int cols; cols=sand.Col();
@@ -121,7 +135,7 @@ double maxBdry(const Matrix& sand)
 {
     double max;
     max=sand(0,0);
-    int site;
+    double site;
 
     int rows; rows=sand.Row();
     int cols; cols=sand.Col();
@@ -140,18 +154,17 @@ double maxBdry(const Matrix& sand)
     return (max);
 }
 
-vector<double> maxBdryVec(const Matrix& sand)
+// max in each direction of matrix on bdry
+void maxBdryVec(const Matrix& sand, double& top, double& rt, double& bot, double& lt)
 {   int rows; rows=sand.Row();
     int cols; cols=sand.Col();
 
-    vector<double> maxv(4);
+    top=sand(0,0);
+    rt=sand(0,cols-1);
+    bot=sand(rows-1,0);
+    lt=sand(0,0);
 
-    double top(sand(0,0));
-    double rt(sand(0,cols-1));
-    double bot(sand(rows-1,0));
-    double lt(sand(0,0));
-
-    int s1; int s2;
+    double s1; double s2;
 
     for (int i=0;i<cols;i++){
         s1= sand(0,i);
@@ -166,34 +179,29 @@ vector<double> maxBdryVec(const Matrix& sand)
         if (lt < s1) {lt = s1;}
         if (rt < s2) {rt =s2;}
     }
-
-
-    maxv[1]=top; 
-    maxv[2]=rt;
-    maxv[3]=bot;
-    maxv[4]=lt;
-
-    return (maxv);
 }
 
-void topple(Matrix& sand, Matrix& sten, const int leak, const int bht){
+// topple each entry in matrix if allowed
+//input sandpile, firing stencil, chips which leak out, background height
+void topple(Matrix& sand, Matrix& sten, const double leak, const int bht){
 int rows; rows=sand.Row();
 int cols; cols=sand.Col();
-int site; int upSite;
-int give; 
+double site;
+double give; //number of fires
 
-int cn=sten(0,1); int ce=sten(1,2); 
-int cs=sten(2,1); int cw=sten(1,0);
-int c=cn+ce+cs+cw;
+double cn=sten(0,1); double ce=sten(1,2); 
+double cs=sten(2,1); double cw=sten(1,0);
+double c=cn+ce+cs+cw;
 
-const int thresh=leak+c;
+const double thresh=leak+c;
 
 for (int i=1; i<rows-1; i++){
     for (int j=1; j<cols-1; j++){
         site=sand(i,j)-bht; //account for background height
         if(site>= thresh) {
             give=floor(site/(thresh));
-            sand(i,j)= site%thresh+bht; //also for bht
+            // sand(i,j)= site%thresh+bht; //change for integer case
+            sand(i,j)=site-give*thresh+bht;
             sand(i+1,j)+=cn*give;
             sand(i-1,j)+=cs*give;
             sand(i,j+1)+=ce*give;
@@ -203,28 +211,24 @@ for (int i=1; i<rows-1; i++){
 }
 }
 
-void resize(MatrixPtr& sand, const int thresh){//resize sandpile
+void resize(MatrixPtr& sand, const double thresh){//resize sandpile
 int row; int col;
 row = sand -> Row();
 col = sand -> Col();
 MatrixPtr big;
 int s=1; // pad with s in each direction
 
-// this speeds up code in uniform case. why?
+// works in uniform case only
+// if(maxBdry(*sand)>=thresh){
+//  big = new Matrix(row+2*s,col+2*s);
+//  *big = pad(*sand,s);
 
-if(maxBdry(*sand)>=thresh){
- big = new Matrix(row+2*s,col+2*s);
- *big = pad(*sand,s);
+//  delete sand;
+//  sand = new Matrix(*big);
+// }
 
- delete sand;
- sand = new Matrix(*big);
-}
-
-/* // there is a bug here!!!!!! some kind of memory leak?
-vector<double> maxv(4);
-maxv = maxBdryVec(*sand);
-int topm, rtm, botm, ltm;
-topm=maxv[1]; rtm=maxv[2]; botm=maxv[3]; ltm=maxv[4];
+double topm, rtm, botm, ltm;
+maxBdryVec(*sand,topm,rtm,botm,ltm);
 
 int nt=0; int nr=0; int nb=0; int nl=0;
 if(topm >= thresh){nt=s;}
@@ -232,17 +236,18 @@ if(rtm >= thresh){nr=s;}
 if(botm >= thresh){nb=s;}
 if(ltm >= thresh){nl=s;}
 
-big = new Matrix(row+nt+nb,col+nr+nl);
-*big = padDir(*sand,nt,nr,nb,nl);
+if( (nt>0) || (nr>0) || (nb>0) || (nl>0) ){
+ big = new Matrix(row+nt+nb,col+nr+nl);
+ *big = padDir(*sand,nt,nr,nb,nl);
 
-delete sand;
-sand = new Matrix(*big);
-*/
+ delete sand;
+ sand = new Matrix(*big);
+}
 }
 
 void stabilize(SandpileData &sand){
- const int thresh = sand.Leak() + sand.Sent(); 
- int max = 0;
+ const double thresh = sand.Leak() + sand.Sent();
+ double max = 0;
  int iter = 0;
  int row; int col;
  row = sand.Init()->Row(); col = sand.Init()->Col();
