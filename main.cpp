@@ -47,7 +47,7 @@ int main()
   auto end = std::chrono::steady_clock::now();
 
   std::chrono::duration<double> elapsed_seconds = end-start;
-  cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
+  cout << "elapsed time: " << elapsed_seconds.count() << endl;
 
   // cout << *ex1.Stab() << endl; //final pile
 
