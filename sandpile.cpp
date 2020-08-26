@@ -298,3 +298,35 @@ void writeSand(const Matrix& sand, std::ostream & out)
      out << "\n";
     }
 }
+
+//Input Sandpile from matrix 
+void readSand(MatrixPtr& sand, string& file)
+{
+    ifstream dataIn(file);
+    vector<vector<double>> vpile;
+    string tempstr;
+    double td;
+    int rows; int cols;
+
+    while( getline(dataIn, tempstr) ){
+        istringstream iss(tempstr);
+        vector<double> tv;
+        while(iss >> td){
+            tv.push_back(td);
+        }
+        vpile.push_back(tv);
+    }
+
+    rows = vpile.size(); cols = vpile[0].size();
+
+    Matrix config(rows,cols);
+    for(int i=0; i<rows; i++){
+        for(int j=0; j< cols; j++){
+        config(i,j)=vpile[i][j];
+        }
+    }
+
+ delete sand;
+ sand = new Matrix(config);
+
+}

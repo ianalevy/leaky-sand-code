@@ -2,12 +2,23 @@
 
 #include <cmath>
 #include <iostream>
+#include <sstream>
+#include <fstream>
 #include <string>
 #include <vector>
-using std::string;
+
+// #include <algorithm>
+// #include <iterator>
+
 using std::cout;
 using std::endl;
+using std::string;
 using std::vector;
+using std::ifstream;
+using std::ofstream;
+using std::istringstream;
+using std::getline;
+
 
 #include "utility.h"
 #include "matrix.h"
@@ -69,3 +80,6 @@ void stabilize(SandpileData& sand);
 
 // Output Sandpile
 void writeSand(const Matrix& sand, std::ostream & out);
+
+//Input Sandpile from matrix 
+void readSand(MatrixPtr& sand, string& file);
