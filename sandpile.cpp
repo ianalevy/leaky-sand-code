@@ -336,8 +336,7 @@ void aveHtVec( MatrixPtr& sand, MatrixPtr& res){
     int rows = sand -> Row();
     int cols = sand -> Col();
     int i, j, k; //iterators
-    double tempd=0;
-    int count=0;
+
     int cen;
     int corx;
     int cory;
@@ -356,29 +355,29 @@ void aveHtVec( MatrixPtr& sand, MatrixPtr& res){
 
     delete res;
     res = new Matrix(cen,3);
+    Matrix tots(cen,2);
 
-    for (k=0; k< cen; k++){
-        count=0;
-        tempd=0;
-        for(i=0; i<rows; i++){
-            for(j=0; j<cols; j++){
-                corx = i-cen+1;
-                cory = j-cen+1;
-
-                if(ipow(corx,2) + ipow(cory,2) <= ipow(k,2)){
-                    count +=1;
-                    tempd+=(*sand)(i,j);
+    for (i = 0; i < rows; i++){
+        for (j = 0; j < cols; j++){
+            corx = i - cen + 1;
+            cory = j - cen + 1;
+            for (k = 0; k < cen; k++){
+                if (ipow(corx, 2) + ipow(cory, 2) <= ipow(k, 2)){
+                    tots(k,0) += 1;
+                    tots(k,1) += (*sand)(i,j);
                 }
-
             }
         }
-        (*res)(k,0)=k;
-        (*res)(k,1)= tempd/count ;
     }
 
-    //now compute derivative?
-    // for (k=1; k< cen-1; k++){
-    //     (*res)(k,2)=(*res)(k,1)-(*res)(k-1,1);
-    // }
+        for(k=0; k<cen; k++){
+            (*res)(k, 0) = k;
+            (*res)(k, 1) = (tots(k,1)) / (tots(k,0));
+        }
 
+        //now compute derivative?
+        for (k = 1; k < cen - 1; k++)
+        {
+            (*res)(k, 2) = (*res)(k, 1) - (*res)(k - 1, 1);
+        }
 }
