@@ -300,7 +300,7 @@ void writeSand(const Matrix& sand, std::ostream & out)
 }
 
 //Input Sandpile from matrix 
-void readSand(MatrixPtr& sand, string& file)
+void readSand( MatrixPtr& sand, string& file )
 {
     ifstream dataIn(file);
     vector<vector<double>> vpile;
@@ -328,5 +328,57 @@ void readSand(MatrixPtr& sand, string& file)
 
  delete sand;
  sand = new Matrix(config);
+}
+
+
+//output vector of average height <=r^2 in direction (1,0)
+void aveHtVec( MatrixPtr& sand, MatrixPtr& res){
+    int rows = sand -> Row();
+    int cols = sand -> Col();
+    int i, j, k; //iterators
+    double tempd=0;
+    int count=0;
+    int cen;
+    int corx;
+    int cory;
+
+    if( rows!= cols){
+        cout << "Error: matrix not square" << endl;
+        exit(1);
+    }
+
+    if( rows % 2 ==0){
+        cout << "Error: no center" << endl;
+        exit(1);
+    }
+
+    cen = (rows/2)+1;
+
+    delete res;
+    res = new Matrix(cen,3);
+
+    for (k=0; k< cen; k++){
+        count=0;
+        tempd=0;
+        for(i=0; i<rows; i++){
+            for(j=0; j<cols; j++){
+                corx = i-cen+1;
+                cory = j-cen+1;
+
+                if(ipow(corx,2) + ipow(cory,2) <= ipow(k,2)){
+                    count +=1;
+                    tempd+=(*sand)(i,j);
+                }
+
+            }
+        }
+        (*res)(k,0)=k;
+        (*res)(k,1)= tempd/count ;
+    }
+
+    //now compute derivative?
+    // for (k=1; k< cen-1; k++){
+    //     (*res)(k,2)=(*res)(k,1)-(*res)(k-1,1);
+    // }
 
 }

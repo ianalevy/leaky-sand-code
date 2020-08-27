@@ -82,4 +82,7 @@ void stabilize(SandpileData& sand);
 void writeSand(const Matrix& sand, std::ostream & out);
 
 //Input Sandpile from matrix 
-void readSand(MatrixPtr& sand, string& file);
+void readSand( MatrixPtr& sand, string& file );
+
+//output vector of average height <=r^2 in direction (1,0)
+void aveHtVec( MatrixPtr& sand, MatrixPtr& res);

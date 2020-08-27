@@ -27,13 +27,27 @@ int main()
   MatrixPtr sand;
   sand= new Matrix(4,4);
 
-  string file;
-  // file ="data/test.txt";
-  file="data/C10^4L0Bht0N1E1S1W1.txt";
+  MatrixPtr ht;
+  ht = new Matrix(1);
 
-  readSand(sand, file);
+  string name="C10^6L10^-5Bht0N1E1S1W1.txt";
+  string infile;
+  infile = "data/"+ name;
+  // // file ="data/test.txt";
+  // file="data/C10^6L10^-4Bht0N1E1S1W1.txt";
 
-  cout << *sand << endl;
+  readSand(sand, infile);
+  aveHtVec(sand, ht);
+
+  // cout << *sand << endl;
+  // cout << *ht << endl;
+
+  //output file to data folder
+  string outfile;
+  outfile="data/analysis/"+ name;
+  std::ofstream out1(outfile);
+  writeSand(*ht, out1);
+  out1.close();
 
   // cout << "start chips=10^n. For n<=9 enter n=" << endl;
   // cin >> ichips;
