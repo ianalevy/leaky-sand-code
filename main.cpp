@@ -37,7 +37,7 @@ int main()
 
 // stencil 
   Matrix A(3,3); //enter n,e,s,w
-  A(0,1)=1; A(1,2)=1; A(2,1)=1; A(1,0)=1; 
+  A(0,1)=1; A(1,2)=1; A(2,1)=0; A(1,0)=0; 
   MatrixPtr sten = new Matrix(A);
 
   SandpileData ex1(chips,ichips,bht,sten,dloss); 

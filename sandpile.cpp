@@ -250,7 +250,7 @@ void stabilize(SandpileData &sand){
  int nrow = row; int ncol = col;
  int orow = row; int ocol = col;
  int count = 100;
- int counti = 10000;
+ int counti = 1000;
  int chips10i = sand.InitChips();
  int chips10f = sand.Chips();
 
