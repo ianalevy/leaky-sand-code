@@ -43,10 +43,17 @@
         "ratio": "cpp"
     },
     "cSpell.words": [
+        "counti",
         "dloss",
         "dstr",
+        "lastp",
         "logd",
         "logdf",
+        "ncol",
+        "ocol",
+        "orow",
+        "resizeq",
+        "rowsxcols",
         "sten"
     ]
 }

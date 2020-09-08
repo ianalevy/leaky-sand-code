@@ -62,7 +62,7 @@ void maxBdryVec(const Matrix& sand, double& top, double& rt, double& bot, double
 void topple(Matrix& sand, Matrix& sten, const double thresh, const int bht);
 
 //resize sandpile if max reached
-void resize(MatrixPtr& sand, const double thresh);
+void resize(MatrixPtr& sand, const double thresh, bool& r);
 
 // stabilize sandpile
 void stabilize(SandpileData& sand);

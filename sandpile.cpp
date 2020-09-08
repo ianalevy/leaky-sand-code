@@ -211,21 +211,13 @@ for (int i=1; i<rows-1; i++){
 }
 }
 
-void resize(MatrixPtr& sand, const double thresh){//resize sandpile
+void resize(MatrixPtr& sand, const double thresh, bool& r){//resize sandpile
 int row; int col;
+r = false; // if don't resize
 row = sand -> Row();
 col = sand -> Col();
 MatrixPtr big;
 int s=1; // pad with s in each direction
-
-// works in uniform case only
-// if(maxBdry(*sand)>=thresh){
-//  big = new Matrix(row+2*s,col+2*s);
-//  *big = pad(*sand,s);
-
-//  delete sand;
-//  sand = new Matrix(*big);
-// }
 
 double topm, rtm, botm, ltm;
 maxBdryVec(*sand,topm,rtm,botm,ltm);
@@ -242,6 +234,9 @@ if( (nt>0) || (nr>0) || (nb>0) || (nl>0) ){
 
  delete sand;
  sand = new Matrix(*big);
+
+ r = true;
+
 }
 }
 
@@ -249,10 +244,13 @@ void stabilize(SandpileData &sand){
  const double thresh = sandThresh(sand);
  double max = 0;
  int iter = 0;
+ bool req = false;
  int row; int col;
  row = sand.Init()->Row(); col = sand.Init()->Col();
  int nrow = row; int ncol = col;
- int count = 500;
+ int orow = row; int ocol = col;
+ int count = 100;
+ int counti = 10000;
  int chips10i = sand.InitChips();
  int chips10f = sand.Chips();
 
@@ -262,17 +260,20 @@ void stabilize(SandpileData &sand){
      max = maxEntry(*sandCur); 
 
      while (max >= (thresh+sand.Bht())){ //account for background ht
-         resize(sandCur, thresh);
+         resize(sandCur, thresh, req);
          topple(*sandCur, *sand.Stencil(), thresh, sand.Bht());
          max = maxEntry(*sandCur);
 
          iter++;
          nrow = sandCur->Row();
          ncol = sandCur->Col();
-         if ((nrow % count == 0) || (ncol % count == 0)){
-             cout << "Iters=" << iter << endl;
+         
+         if (iter % counti ==0 )
+            cout << "Iters=" << iter <<endl;
+
+         if (((nrow % count == 0) || (ncol % count == 0)) && req)
              cout << "rowsxcols=" << nrow << "x" << ncol << endl;
-            }
+
         }
      if (i<chips10f){ *sandCur = 10*(*sandCur);}
  }
