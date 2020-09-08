@@ -41,7 +41,7 @@ Matrix& Matrix::operator-=( const Matrix& B){   // *this-=B
  }
 
 Matrix operator+(const Matrix& A, const Matrix& B){ // add two Matrices
- if (A.row!=B.row || A.col!=B.col)error("Matrix+: incomatable sizes \n");
+ if (A.row!=B.row || A.col!=B.col)error("Matrix+: incompatable sizes \n");
  Matrix C(A.row, A.col);
  int i,rc=A.row*A.col;
  for(i=0; i<rc; i++)
@@ -51,7 +51,7 @@ Matrix operator+(const Matrix& A, const Matrix& B){ // add two Matrices
 
 Matrix operator*(const Matrix& A, const Matrix& B){
  // Matrix multiplication
- if (A.col!=B.row)error("Matrix*: incomatable sizes \n");
+ if (A.col!=B.row)error("Matrix*: incompatable sizes \n");
  Matrix C(A.row, B.col);
  int i,j,k;
  for(i=0; i<A.row; i++)

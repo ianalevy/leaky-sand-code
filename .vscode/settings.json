@@ -41,5 +41,12 @@
         "algorithm": "cpp",
         "chrono": "cpp",
         "ratio": "cpp"
-    }
+    },
+    "cSpell.words": [
+        "dloss",
+        "dstr",
+        "logd",
+        "logdf",
+        "sten"
+    ]
 }

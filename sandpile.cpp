@@ -7,12 +7,12 @@ int ipow (int x, int p) {//x^p for integers
   return i;
 }
 
-SandpileData::SandpileData(int c, int ci, int b, MatrixPtr S, double l){ // set up sandpile
+SandpileData::SandpileData(int c, int ci, int b, MatrixPtr S, double d){ // set up sandpile
    chips=c;
    initChips=ci;
    bht=b;
    stencil =S;
-   leak=l;
+   dloss=d;
    Matrix A(3,3); A(1,1)=ipow(10, ci);
    MatrixPtr Aptr = new Matrix(A);
 
@@ -26,7 +26,7 @@ SandpileData::SandpileData(int c, int ci, int b, MatrixPtr S, double l){ // set 
    bht=A.bht;
    delete stencil;
    stencil = new Matrix(*A.stencil);
-   leak = A.leak;
+   dloss = A.dloss;
    delete init;
    init = new Matrix(*A.init);
    delete stab;
@@ -45,7 +45,7 @@ SandpileData& SandpileData::operator=( const SandpileData& B){   // *this=B
    bht=B.bht;
    delete stencil;
    stencil = new Matrix(*B.stencil);
-   leak=B.leak;
+   dloss=B.dloss;
    delete init;
    init = new Matrix(*B.init);
    delete stab;
@@ -54,51 +54,52 @@ SandpileData& SandpileData::operator=( const SandpileData& B){   // *this=B
    return *this;
  }
 
-double SandpileData::Sent(){//chips sent out
-     Matrix A(*stencil);
-     double c;
-     c=A(0,1)+A(1,2)+A(2,1)+A(1,0);
-    
-    return(c);
- }
-
-
- void SandpileData::SetStab(MatrixPtr& A){
+ void SandpileData::SetStab(MatrixPtr &A)
+ {
      delete stab;
      stab = new Matrix(*A);
  }
 
- string fileName(const SandpileData& A){ //write file name
-    Matrix s(*A.stencil);
-    int north = s(0,1);
-    int east = s(1,2);
-    int south = s(2,1);
-    int west = s(1,0);
-    int logleak;
-    double dleak;
-    string leakstr;
+ string fileName(const SandpileData &A)
+ { //write file name
+     Matrix s(*A.stencil);
+     int north = s(0, 1);
+     int east = s(1, 2);
+     int south = s(2, 1);
+     int west = s(1, 0);
+     double logdf;
+     double d;
+     int di;
+     double df;
+     string dstr;
 
-    if(A.leak< 1e-15){
-        logleak=0;
-        leakstr = "L" + std::to_string(logleak);
-    }
-    else if (1<A.leak){
-        dleak = A.leak;
-        leakstr = "L" + std::to_string(dleak);
-    }
-    else{
-        logleak=round(log10(A.leak));
-        leakstr = "L10^" + std::to_string(logleak);
-    }
+     d = A.dloss;
+     di = floor(d);
+     df = d - di;
 
-    string name = "./data/";
-    name += "C10^"+ std::to_string(A.chips) 
-     + leakstr
-     + "Bht" + std::to_string(A.bht)
-     +"N" + std::to_string(north) +"E" + std::to_string(east) 
-     +"S" + std::to_string(south) + "W" + std::to_string(west);
-    name+= ".txt";
-    return(name);
+     dstr = "d" + std::to_string(di);
+
+     if (df > 1e-15)
+     {
+         logdf = log10(df);
+         dstr += "+1e" + std::to_string(logdf);
+     }
+
+     string name = "./data/";
+     name += "C10^" + std::to_string(A.chips) + dstr + "Bht" + std::to_string(A.bht) + "N" + std::to_string(north) + "E" + std::to_string(east) + "S" + std::to_string(south) + "W" + std::to_string(west);
+     name += ".txt";
+     return (name);
+ }
+
+ double sandThresh(const SandpileData &A) //threshold to fire
+ {
+     double c;
+     Matrix S(*A.stencil);
+     c = S(0, 1) + S(1, 2) + S(2, 1) + S(1, 0);
+     double thresh;
+     thresh = c * A.dloss;
+
+     return (thresh);
  }
 
 Matrix initializePile(const int chips, const int dimx, const int dimy){
@@ -182,8 +183,8 @@ void maxBdryVec(const Matrix& sand, double& top, double& rt, double& bot, double
 }
 
 // topple each entry in matrix if allowed
-//input sandpile, firing stencil, chips which leak out, background height
-void topple(Matrix& sand, Matrix& sten, const double leak, const int bht){
+//input sandpile, firing stencil, threshold to fire, background height
+void topple(Matrix& sand, Matrix& sten, const double thresh, const int bht){
 int rows; rows=sand.Row();
 int cols; cols=sand.Col();
 double site;
@@ -193,15 +194,14 @@ double cn=sten(0,1); double ce=sten(1,2);
 double cs=sten(2,1); double cw=sten(1,0);
 double c=cn+ce+cs+cw;
 
-const double thresh=leak+c;
-
 for (int i=1; i<rows-1; i++){
     for (int j=1; j<cols-1; j++){
         site=sand(i,j)-bht; //account for background height
         if(site>= thresh) {
             give=floor(site/(thresh));
             // sand(i,j)= site%thresh+bht; //change for integer case
-            sand(i,j)=site-give*thresh+bht;
+            // sand(i,j)=site-give*thresh+bht;
+            sand(i,j)-=give*thresh;
             sand(i+1,j)+=cn*give;
             sand(i-1,j)+=cs*give;
             sand(i,j+1)+=ce*give;
@@ -246,13 +246,13 @@ if( (nt>0) || (nr>0) || (nb>0) || (nl>0) ){
 }
 
 void stabilize(SandpileData &sand){
- const double thresh = sand.Leak() + sand.Sent();
+ const double thresh = sandThresh(sand);
  double max = 0;
  int iter = 0;
  int row; int col;
  row = sand.Init()->Row(); col = sand.Init()->Col();
  int nrow = row; int ncol = col;
- int count = 1000;
+ int count = 500;
  int chips10i = sand.InitChips();
  int chips10f = sand.Chips();
 
@@ -263,13 +263,13 @@ void stabilize(SandpileData &sand){
 
      while (max >= (thresh+sand.Bht())){ //account for background ht
          resize(sandCur, thresh);
-         topple(*sandCur, *sand.Stencil(), sand.Leak(), sand.Bht());
+         topple(*sandCur, *sand.Stencil(), thresh, sand.Bht());
          max = maxEntry(*sandCur);
 
          iter++;
          nrow = sandCur->Row();
          ncol = sandCur->Col();
-         if (iter % count == 0){
+         if ((nrow % count == 0) || (ncol % count == 0)){
              cout << "Iters=" << iter << endl;
              cout << "rowsxcols=" << nrow << "x" << ncol << endl;
             }
