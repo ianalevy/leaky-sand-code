@@ -70,10 +70,15 @@ void SandpileData::SetStab(MatrixPtr &A)
 string fileName(const SandpileData &A)
 { //write file name
     Matrix s(*A.stencil);
-    int north = s(0, 1);
-    int east = s(1, 2);
-    int south = s(2, 1);
-    int west = s(1, 0);
+    int cn = s(0, 1);
+    int cne = s(0, 2);
+    int ce = s(1, 2);
+    int cse = s(2, 2);
+    int cs = s(2, 1);
+    int csw = s(2, 0);
+    int cw = s(1, 0);
+    int cnw = s(0, 0);
+
     double logdf;
     double d;
     int di;
@@ -93,7 +98,9 @@ string fileName(const SandpileData &A)
     }
 
     string name = "./data/";
-    name += "C10^" + std::to_string(A.chips) + dstr + "Bht" + std::to_string(A.bht) + "N" + std::to_string(north) + "E" + std::to_string(east) + "S" + std::to_string(south) + "W" + std::to_string(west);
+    name += "C10^" + std::to_string(A.chips) + dstr + "Bht" + std::to_string(A.bht) 
+    + "N" + std::to_string(cn) + "NE" + std::to_string(cne) + "E" + std::to_string(ce) + "SE" + std::to_string(cse)
+    + "S" + std::to_string(cs) + "SW" + std::to_string(cse) + "W" + std::to_string(cw) + "NW" + std::to_string(cnw);
     name += ".txt";
     return (name);
 }
@@ -102,7 +109,7 @@ double sandThresh(const SandpileData &A) //threshold to fire
 {
     double c;
     Matrix S(*A.stencil);
-    c = S(0, 1) + S(1, 2) + S(2, 1) + S(1, 0);
+    c = S(0, 0) + S(0, 1) + S(0, 2) + S(1, 0) + S(1, 1) + S(1, 2) + S(2, 0) + S(2, 1) + S(2, 2);
     double thresh;
     thresh = c * A.dloss;
 
@@ -241,10 +248,14 @@ void topple(Matrix &sand, Matrix &sten, const double thresh, const int bht)
     double give; //number of fires
 
     double cn = sten(0, 1);
+    double cne = sten(0, 2);
     double ce = sten(1, 2);
+    double cse = sten(2, 2);
     double cs = sten(2, 1);
+    double csw = sten(2, 0);
     double cw = sten(1, 0);
-    double c = cn + ce + cs + cw;
+    double cnw = sten(0, 0);
+    double c = cn + cne + ce + cse + cs + csw + cw + cnw;
 
     for (int i = 1; i < rows - 1; i++)
     {
@@ -257,10 +268,14 @@ void topple(Matrix &sand, Matrix &sten, const double thresh, const int bht)
                 // sand(i,j)= site%thresh+bht; //change for integer case
                 // sand(i,j)=site-give*thresh+bht;
                 sand(i, j) -= give * thresh;
-                sand(i + 1, j) += cn * give;
-                sand(i - 1, j) += cs * give;
+                sand(i - 1, j) += cn * give;
+                sand(i - 1, j + 1) += cne * give;
                 sand(i, j + 1) += ce * give;
+                sand(i + 1, j + 1) += cse * give;
+                sand(i + 1, j) += cs * give;
+                sand(i + 1, j - 1) += csw * give;
                 sand(i, j - 1) += cw * give;
+                sand(i - 1, j - 1) += cnw * give;
             }
         }
     }

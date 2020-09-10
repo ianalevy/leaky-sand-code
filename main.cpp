@@ -36,8 +36,13 @@ int main()
   cout << endl;
 
 // stencil 
-  Matrix A(3,3); //enter n,e,s,w
-  A(0,1)=1; A(1,2)=1; A(2,1)=0; A(1,0)=0; 
+  int cn = 1; int cne = 1; int ce = 1; int cse = 1; 
+  int cs = 1; int csw = 1; int cw = 1; int cnw = 1;
+
+  Matrix A(3,3); 
+  A(0,0) = cnw; A(0,1) = cn; A(0,2) = cne;
+  A(1,0) = cw; A(1,1) = 0; A(1,2) = ce;
+  A(2,0) = csw; A(2,1) = cs; A(2,2) = cse;
   MatrixPtr sten = new Matrix(A);
 
   SandpileData ex1(chips,ichips,bht,sten,dloss); 
