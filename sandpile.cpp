@@ -100,7 +100,7 @@ string fileName(const SandpileData &A)
     string name = "./data/";
     name += "C10^" + std::to_string(A.chips) + dstr + "Bht" + std::to_string(A.bht) 
     + "N" + std::to_string(cn) + "NE" + std::to_string(cne) + "E" + std::to_string(ce) + "SE" + std::to_string(cse)
-    + "S" + std::to_string(cs) + "SW" + std::to_string(cse) + "W" + std::to_string(cw) + "NW" + std::to_string(cnw);
+    + "S" + std::to_string(cs) + "SW" + std::to_string(csw) + "W" + std::to_string(cw) + "NW" + std::to_string(cnw);
     name += ".txt";
     return (name);
 }
