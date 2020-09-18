@@ -7,7 +7,8 @@ do for [fn in system("dir /b")] {
         set term push
         load "plotStyle.gp"
         # set term pdf
-        set term pdfcairo enhanced crop
+        set term pdfcairo enhanced crop size 100,100
+        set size square 1,1
 
         data=sprintf("%s",fn)
         filename=sprintf("./pics/%s.pdf",name)
@@ -20,7 +21,7 @@ do for [fn in system("dir /b")] {
         b(x) = (x <= 0 ? 1 : sin(2*pi*x))
         set palette functions r(gray),g(gray),b(gray)
 
-        plot data matrix with image
+        plot data matrix with image notitle
         set o
         set term pop
     }
