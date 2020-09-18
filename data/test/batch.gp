@@ -7,14 +7,25 @@ do for [fn in system("dir /b")] {
         set term push
         load "plotStyle.gp"
         # set term pdf
-        set term pdfcairo crop
-        set size square 1,1
+        set term pdfcairo enhanced crop
+        # set size square 1,1
+        # set terminal pngcairo size 400,400 enhanced square
 
         data=sprintf("%s",fn)
         filename=sprintf("./%s.pdf",name)
+        # filename=sprintf("./%s.png",name)
 
         set out filename
+
+        unset border
+
+        r(x) = (x <= 0 ? 1 : sqrt(x))
+        g(x) = (x <= 0 ? 1: x**3)
+        b(x) = (x <= 0 ? 1 : sin(2*pi*x))
+        set palette functions r(gray),g(gray),b(gray)
         plot data matrix with image
+
+
         set o
         set term pop
     }
