@@ -37,7 +37,7 @@ int main()
 
 // stencil 
   int cn = 1; int cne = 0; int ce = 1; int cse = 0; 
-  int cs = 1; int csw = 0; int cw = 1; int cnw = 0;
+  int cs = 0; int csw = 0; int cw = 0; int cnw = 0;
 
   Matrix A(3,3); 
   A(0,0) = cnw; A(0,1) = cn; A(0,2) = cne;
