@@ -37,7 +37,7 @@ int main()
 
 // stencil 
   int cn = 1; int cne = 0; int ce = 1; int cse = 0; 
-  int cs = 0; int csw = 0; int cw = 0; int cnw = 0;
+  int cs = 1; int csw = 0; int cw = 1; int cnw = 0;
 
   Matrix A(3,3); 
   A(0,0) = cnw; A(0,1) = cn; A(0,2) = cne;
@@ -60,16 +60,16 @@ int main()
   // writeSand(*ex1.Stab(), out1);
   // out1.close();
 
-  // std::ofstream out1("./data/out1.txt");
-  // writeSand(*ex1.Stab(), out1);
-  // out1.close();
-
-//output file to data folder
-  string fn = fileName(ex1);
-  cout << fn << endl;
-  std::ofstream out1(fn);
+  std::ofstream out1("./data/out1.txt");
   writeSand(*ex1.Stab(), out1);
   out1.close();
+
+//output file to data folder
+  // string fn = fileName(ex1);
+  // cout << fn << endl;
+  // std::ofstream out1(fn);
+  // writeSand(*ex1.Stab(), out1);
+  // out1.close();
 
 return 0;
 }

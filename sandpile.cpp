@@ -255,7 +255,6 @@ void topple(Matrix &sand, Matrix &sten, const double thresh, const int bht)
     double csw = sten(2, 0);
     double cw = sten(1, 0);
     double cnw = sten(0, 0);
-    double c = cn + cne + ce + cse + cs + csw + cw + cnw;
 
     for (int i = 1; i < rows - 1; i++)
     {
@@ -264,9 +263,7 @@ void topple(Matrix &sand, Matrix &sten, const double thresh, const int bht)
             site = sand(i, j) - bht; //account for background height
             if (site >= thresh)
             {
-                give = floor(site / (thresh));
-                // sand(i,j)= site%thresh+bht; //change for integer case
-                // sand(i,j)=site-give*thresh+bht;
+                give = floor(site / thresh);
                 sand(i, j) -= give * thresh;
                 sand(i - 1, j) += cn * give;
                 sand(i - 1, j + 1) += cne * give;
