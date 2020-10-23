@@ -17,11 +17,12 @@ do for [fn in system("dir /b")] {
 
         set out filename
 
-        unset border
-        r(x) = (x <= 0 ? 1 : sqrt(x))
-        g(x) = (x <= 0 ? 1: x**3)
-        b(x) = (x <= 0 ? 1 : sin(2*pi*x))
-        set palette functions r(gray),g(gray),b(gray)
+        # unset border
+        # unset colorbox
+        # r(x) = (x <= 0 ? 1 : sqrt(x))
+        # g(x) = (x <= 0 ? 1: x**3)
+        # b(x) = (x <= 0 ? 1 : sin(2*pi*x))
+        # set palette functions r(gray),g(gray),b(gray)
 
         plot data matrix with image notitle
         set o

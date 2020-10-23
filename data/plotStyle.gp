@@ -101,8 +101,10 @@ set my2tics default
 set mcbtics default
 set mrtics default
 set nomttics
-unset xtics
-unset ytics
+set xtics border in scale 1,0.5 mirror norotate  autojustify
+set xtics  norangelimit autofreq 
+set ytics border in scale 1,0.5 mirror norotate  autojustify
+set ytics  norangelimit autofreq 
 set ztics border in scale 1,0.5 nomirror norotate  autojustify
 set ztics  norangelimit autofreq 
 unset x2tics
@@ -155,18 +157,19 @@ set pm3d interpolate 1,1 flush begin noftriangles noborder corners2color mean
 set pm3d nolighting
 set palette positive nops_allcF maxcolors 0 gamma 1.5 color model RGB 
 set palette rgbformulae 7, 5, 15
+set colorbox default
 set colorbox vertical origin screen 0.9, 0.2 size screen 0.05, 0.6 front  noinvert bdefault
-unset colorbox
 set style boxplot candles range  1.50 outliers pt 7 separation 1 labels auto unsorted
-set loadpath 
+set loadpath
 set fontpath 
 set psdir
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
 GNUTERM = "wxt"
-len = 27
-form = ".txt"
-data = "C10^6L10^-3Bht0N1E1S1W1.txt"
-filename = "C10^6L10^-3Bht0N1E1S1W1.png"
-## Last datafile plotted: "C10^6L10^-1Bht0N1E1S1W1.txt"
-# plot 'C10^6L10^-1Bht0N1E1S1W1.txt' matrix with image
+len = 4
+form = "test"
+name = ""
+data = "out1.txt"
+filename = "./pics/out1.pdf"
+## Last datafile plotted: "out1.txt"
+# plot 'out1.txt' matrix with image
 #    EOF
