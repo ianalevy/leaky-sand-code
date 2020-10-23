@@ -56,20 +56,16 @@ int main()
 
   // cout << *ex1.Stab() << endl; //final pile
 
-  // std::ofstream out1("out1.txt");
-  // writeSand(*ex1.Stab(), out1);
-  // out1.close();
-
   std::ofstream out1("./data/out1.txt");
   writeSand(*ex1.Stab(), out1);
   out1.close();
 
 //output file to data folder
-  // string fn = fileName(ex1);
-  // cout << fn << endl;
-  // std::ofstream out1(fn);
-  // writeSand(*ex1.Stab(), out1);
-  // out1.close();
+  string fn = fileName(ex1);
+  cout << fn << endl;
+  std::ofstream out1(fn);
+  writeSand(*ex1.Stab(), out1);
+  out1.close();
 
 return 0;
 }
