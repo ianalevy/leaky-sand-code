@@ -92,10 +92,7 @@ string fileName(const SandpileData &A)
     int cw = s(1, 0);
     int cnw = s(0, 0);
 
-    int digits=4; //set digits to right of decimal place in bht
-    if(A.bht<0){
-        digits ++;
-    }
+    int digits=2; //set digits to right of decimal place in bht
 
     double logdf;
     double d;
@@ -112,11 +109,16 @@ string fileName(const SandpileData &A)
     if (df > 1e-15)
     {
         logdf = log10(df);
-        dstr += "+1e" + std::to_string(logdf);
+        dstr += "p1e" + (std::to_string(logdf)).substr(0,digits);
     }
 
+    double bht; int bhti; double bhtf;
+    bht = A.bht;
+    bhti = floor(bht);
+    bhtf = bht - bhti;
+
     string name = "./data/";
-    name += "c1e" + std::to_string(A.chips) + dstr + "bht" + (std::to_string(A.bht)).substr(0,digits)
+    name += "c1e" + std::to_string(A.chips) + dstr + "bht" + std::to_string(bhti) + "-" + (std::to_string(bhtf)).substr(2,2)
     + "n" + std::to_string(cn) + "ne" + std::to_string(cne) + "e" + std::to_string(ce) + "se" + std::to_string(cse)
     + "s" + std::to_string(cs) + "sw" + std::to_string(csw) + "w" + std::to_string(cw) + "w" + std::to_string(cnw);
     name += ".txt";

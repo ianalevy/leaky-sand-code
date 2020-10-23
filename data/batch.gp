@@ -7,12 +7,13 @@ do for [fn in system("dir /b")] {
         set term push
         load "plotStyle.gp"
         # set term pdf
-        # set term pdfcairo enhanced crop size 100,100
-        set term pngcairo enhanced crop size 2000,2000
+        set term pdfcairo enhanced crop size 100,100
+        # set term pngcairo enhanced crop size 2000,2000
         set size square 1,1
 
         data=sprintf("%s",fn)
-        filename=sprintf("./pics/pics-png/%s.png",name)
+        filename=sprintf("./pics/%s.pdf",name)
+        # filename=sprintf("./pics/pics-png/%s.png",name)
 
         set out filename
 
