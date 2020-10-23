@@ -26,7 +26,7 @@ class SandpileData
     MatrixPtr odom;
 
 public:                                                        //total chips, init chips, background ht, stencil, leak
-    SandpileData(int c, int ci, int b, MatrixPtr S, double d); // constructors and destructors
+    SandpileData(int c, int ci, double b, MatrixPtr S, double d); // constructors and destructors
     SandpileData(const SandpileData &);                        //copy constructor
     ~SandpileData();                                           //Destructor
 

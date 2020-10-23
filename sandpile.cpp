@@ -9,7 +9,7 @@ int ipow(int x, int p)
     return i;
 }
 
-SandpileData::SandpileData(int c, int ci, int b, MatrixPtr S, double d)
+SandpileData::SandpileData(int c, int ci, double b, MatrixPtr S, double d)
 { // set up sandpile
     chips = c;
     initChips = ci;
@@ -109,16 +109,17 @@ string fileName(const SandpileData &A)
     if (df > 1e-15)
     {
         logdf = log10(df);
-        dstr += "p1e" + (std::to_string(logdf)).substr(0,digits);
+        dstr += "p1e" + (std::to_string(logdf)).substr(0,2+digits);
     }
 
     double bht; int bhti; double bhtf;
     bht = A.bht;
     bhti = floor(bht);
-    bhtf = bht - bhti;
+    bhtf = bht - 1.0*bhti;
 
+// c1e10d1p1e-0.6bht2.100n1ne0e1se0s1sw0w1w0.txt corresponds to c=10^10, d=1+1e-0.6, bht=2.100 then directions
     string name = "./data/";
-    name += "c1e" + std::to_string(A.chips) + dstr + "bht" + std::to_string(bhti) + "-" + (std::to_string(bhtf)).substr(2,2)
+    name += "c1e" + std::to_string(A.chips) + dstr + "bht" + (std::to_string(bht)).substr(0,3+digits)
     + "n" + std::to_string(cn) + "ne" + std::to_string(cne) + "e" + std::to_string(ce) + "se" + std::to_string(cse)
     + "s" + std::to_string(cs) + "sw" + std::to_string(csw) + "w" + std::to_string(cw) + "w" + std::to_string(cnw);
     name += ".txt";
