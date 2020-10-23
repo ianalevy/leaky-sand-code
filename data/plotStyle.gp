@@ -165,11 +165,11 @@ set fontpath
 set psdir
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
 GNUTERM = "wxt"
-len = 4
-form = "test"
-name = ""
-data = "out1.txt"
-filename = "./pics/out1.pdf"
+# len = 4
+# form = "test"
+# name = ""
+# data = "out1.txt"
+# filename = "./pics/out1.pdf"
 ## Last datafile plotted: "out1.txt"
 # plot 'out1.txt' matrix with image
 #    EOF
