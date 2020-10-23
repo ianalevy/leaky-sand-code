@@ -40,7 +40,21 @@
         "xutility": "cpp",
         "algorithm": "cpp",
         "chrono": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "array": "cpp",
+        "atomic": "cpp",
+        "*.tcc": "cpp",
+        "cctype": "cpp",
+        "clocale": "cpp",
+        "cstdarg": "cpp",
+        "ctime": "cpp",
+        "cwctype": "cpp",
+        "deque": "cpp",
+        "unordered_map": "cpp",
+        "memory_resource": "cpp",
+        "optional": "cpp",
+        "string_view": "cpp",
+        "sstream": "cpp"
     },
     "cSpell.words": [
         "counti",
@@ -55,5 +69,9 @@
         "resizeq",
         "rowsxcols",
         "sten"
+    ],
+    "cSpell.ignoreWords": [
+        "aptr",
+        "ipow"
     ]
 }

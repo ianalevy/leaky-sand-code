@@ -17,11 +17,17 @@ SandpileData::SandpileData(int c, int ci, int b, MatrixPtr S, double d)
     stencil = S;
     dloss = d;
     Matrix A(3, 3);
-    A(1, 1) = ipow(10, ci);
+    A(0,0)=b; A(0,1)=b; A(0,2)=b;
+    A(1,0)=b; A(1,1)=ipow(10, ci); A(1,2)=b;
+    A(2,0)=b; A(2,1)=b; A(2,2)=b;
     MatrixPtr Aptr = new Matrix(A);
+
+    Matrix B(3, 3);
+    MatrixPtr Bptr = new Matrix(B);
 
     init = Aptr;
     stab = Aptr;
+    odom= Bptr;
 };
 
 SandpileData::SandpileData(const SandpileData &A)
@@ -36,6 +42,8 @@ SandpileData::SandpileData(const SandpileData &A)
     init = new Matrix(*A.init);
     delete stab;
     stab = new Matrix(*A.stab);
+    delete odom;
+    odom = new Matrix(*A.odom);
 };
 
 SandpileData::~SandpileData()
@@ -43,6 +51,7 @@ SandpileData::~SandpileData()
     delete stencil;
     delete init;
     delete stab;
+    delete odom;
 }
 
 SandpileData &SandpileData::operator=(const SandpileData &B)
@@ -57,14 +66,18 @@ SandpileData &SandpileData::operator=(const SandpileData &B)
     init = new Matrix(*B.init);
     delete stab;
     stab = new Matrix(*B.stab);
+    delete odom;
+    odom = new Matrix(*B.odom);
 
     return *this;
 }
 
-void SandpileData::SetStab(MatrixPtr &A)
+void SandpileData::SetStab(MatrixPtr& As, MatrixPtr& Ao)
 {
     delete stab;
-    stab = new Matrix(*A);
+    stab = new Matrix(*As);
+    delete odom;
+    odom = new Matrix(*Ao);
 }
 
 string fileName(const SandpileData &A)
@@ -114,24 +127,6 @@ double sandThresh(const SandpileData &A) //threshold to fire
     thresh = c * A.dloss;
 
     return (thresh);
-}
-
-Matrix initializePile(const int chips, const int dimx, const int dimy)
-{
-    Matrix config(dimx, dimy);
-    int center;
-
-    if (dimx == dimy)
-    {
-        center = floor(dimx / 2);
-    }
-    else
-    {
-        center = 0;
-    }
-    config(center, center) += chips;
-
-    return (config);
 }
 
 double maxEntry(const Matrix &sand)
@@ -238,7 +233,7 @@ void maxBdryVec(const Matrix &sand, double &top, double &rt, double &bot, double
 
 // topple each entry in matrix if allowed
 //input sandpile, firing stencil, threshold to fire, background height
-void topple(Matrix &sand, Matrix &sten, const double thresh, const int bht)
+void topple(Matrix &sand, Matrix& odom, Matrix &sten, const double thresh)
 {
     int rows;
     rows = sand.Row();
@@ -260,11 +255,12 @@ void topple(Matrix &sand, Matrix &sten, const double thresh, const int bht)
     {
         for (int j = 1; j < cols - 1; j++)
         {
-            site = sand(i, j) - bht; //account for background height
+            site = sand(i, j); 
             if (site >= thresh)
             {
                 give = floor(site / thresh);
                 sand(i, j) -= give * thresh;
+                odom(i,j) +=give*thresh;
                 sand(i - 1, j) += cn * give;
                 sand(i - 1, j + 1) += cne * give;
                 sand(i, j + 1) += ce * give;
@@ -278,7 +274,7 @@ void topple(Matrix &sand, Matrix &sten, const double thresh, const int bht)
     }
 }
 
-void resize(MatrixPtr &sand, const double thresh, bool &r)
+void resize(MatrixPtr &sand, MatrixPtr& odom, const double thresh, bool &r, const double bht)
 { //resize sandpile
     int row;
     int col;
@@ -286,6 +282,7 @@ void resize(MatrixPtr &sand, const double thresh, bool &r)
     row = sand->Row();
     col = sand->Col();
     MatrixPtr big;
+    MatrixPtr bigo;
     int s = 1; // pad with s in each direction
 
     double topm, rtm, botm, ltm;
@@ -315,10 +312,15 @@ void resize(MatrixPtr &sand, const double thresh, bool &r)
     if ((nt > 0) || (nr > 0) || (nb > 0) || (nl > 0))
     {
         big = new Matrix(row + nt + nb, col + nr + nl);
-        *big = padDir(*sand, nt, nr, nb, nl);
+        *big = padDirVal(*sand, nt, nr, nb, nl, bht);
+        bigo = new Matrix(row + nt + nb, col + nr + nl);
+        *bigo = padDirVal(*odom, nt, nr, nb, nl, 0);
 
         delete sand;
         sand = new Matrix(*big);
+
+        delete odom;
+        odom = new Matrix(*bigo);
 
         r = true;
     }
@@ -336,23 +338,21 @@ void stabilize(SandpileData &sand)
     col = sand.Init()->Col();
     int nrow = row;
     int ncol = col;
-    int orow = row;
-    int ocol = col;
     int count = 100;
     int counti = 1000;
-    int chips10i = sand.InitChips();
-    int chips10f = sand.Chips();
+    double bht = sand.Bht();
 
     MatrixPtr sandCur = new Matrix(*sand.Init());
+    MatrixPtr odomCur = new Matrix(*sand.Odom());
 
-    for (int i = chips10i; i <= chips10f; i++)
+    for (int i = sand.InitChips(); i <= sand.Chips(); i++)
     {
         max = maxEntry(*sandCur);
 
-        while (max >= (thresh + sand.Bht()))
+        while (max >= thresh)
         { //account for background ht
-            resize(sandCur, thresh, req);
-            topple(*sandCur, *sand.Stencil(), thresh, sand.Bht());
+            resize(sandCur, odomCur, thresh, req, bht);
+            topple(*sandCur, *odomCur, *sand.Stencil(), thresh);
             max = maxEntry(*sandCur);
 
             iter++;
@@ -365,23 +365,22 @@ void stabilize(SandpileData &sand)
             if (((nrow % count == 0) || (ncol % count == 0)) && req)
                 cout << "rowsxcols=" << nrow << "x" << ncol << endl;
         }
-        if (i < chips10f)
+        if (i < sand.Chips())
         {
-            *sandCur = 10 * (*sandCur);
-        }
-    }
-
-    //subtract bht
-    for (int i = 0; i < nrow; i++)
-    {
-        for (int j = 0; j < ncol; j++)
-        {
-            (*sandCur)(i, j) = (*sandCur)(i, j) - sand.Bht();
+            *odomCur = 10 * (*odomCur);
+            for(int i=0;i<nrow;i++){
+                for(int j=0;j<ncol;j++){
+                    // if(((*sandCur)(i,j) > 0) || ((*odomCur)(i,j) > sand.Bht())){
+                    if(((*sandCur)(i,j) > 0) || ((*odomCur)(i,j) > std::max(0.0, bht))){                        
+                        (*sandCur)(i,j) *= 10; 
+                    }
+                }
+            }
         }
     }
 
     //update final config;
-    sand.SetStab(sandCur);
+    sand.SetStab(sandCur, odomCur);
 }
 
 //Output sandpile

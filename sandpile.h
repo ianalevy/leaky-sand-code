@@ -18,11 +18,12 @@ class SandpileData
 {                  //all info for sandpile with delta mass at origin
     int chips;     //total chips as power of 10
     int initChips; //chips to start with as power of 10
-    int bht;       // background height is negative bht
+    double bht;       // background height
     MatrixPtr stencil;
     double dloss; // d parameter
     MatrixPtr init;
     MatrixPtr stab;
+    MatrixPtr odom;
 
 public:                                                        //total chips, init chips, background ht, stencil, leak
     SandpileData(int c, int ci, int b, MatrixPtr S, double d); // constructors and destructors
@@ -33,20 +34,18 @@ public:                                                        //total chips, in
 
     int Chips() const { return chips; }
     int InitChips() const { return initChips; }
-    int Bht() const { return bht; }
+    double Bht() const { return bht; }
     double Dloss() const { return dloss; }
     MatrixPtr Stencil() const { return stencil; }
     MatrixPtr Init() const { return init; }
     MatrixPtr Stab() const { return stab; }
+    MatrixPtr Odom() const { return odom; }
 
-    void SetStab(MatrixPtr &A);
+    void SetStab(MatrixPtr& As, MatrixPtr& Ao);
 
     friend string fileName(const SandpileData &A);   //write file name
     friend double sandThresh(const SandpileData &A); //threshold to fire
 };
-
-// initialize sandpile
-Matrix initializePile(const int chips, const int dimx, const int dimy);
 
 // max of matrix
 double maxEntry(const Matrix &config);
@@ -58,11 +57,11 @@ double maxBdry(const Matrix &config);
 void maxBdryVec(const Matrix &sand, double &top, double &rt, double &bot, double &lt);
 
 // topple each entry in matrix if allowed
-//input sandpile, firing stencil, threshold to fire, background height
-void topple(Matrix &sand, Matrix &sten, const double thresh, const int bht);
+//input sandpile, firing stencil, threshold to fire
+void topple(Matrix &sand, Matrix& odom, Matrix &sten, const double thresh);
 
 //resize sandpile if max reached
-void resize(MatrixPtr &sand, const double thresh, bool &r);
+void resize(MatrixPtr &sand, MatrixPtr& odom, const double thresh, bool &r, const double bht);
 
 // stabilize sandpile
 void stabilize(SandpileData &sand);

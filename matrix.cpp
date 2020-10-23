@@ -182,6 +182,28 @@ Matrix padDir(const Matrix& A,const int top, const int rt, const int bot, const 
 
  }
 
+Matrix padDirVal(const Matrix& A,const int top, const int rt, const int bot, const int lt, const double val)
+{// pad A on each side with top, rt, bot lt rows
+ int ar = A.row; int ac = A.col;
+ Matrix C(ar+top+bot,ac+rt+lt);
+ int cr = C.row; int cc = C.col;
+ int i,j;
+
+  for(i=0; i<cr; i++){
+    for(j=0; j<cc; j++){
+      if((i>top-1) && (j>lt-1) && (i<ar+top) && (j<ac+lt)){
+        C.m[i*C.col + j]=A.m[(i-top)*A.col + (j-lt)];
+        }
+        else {
+          C.m[i*C.col + j]=val;
+        }
+      }
+    }
+
+ return C;
+
+ }
+
 TridiagonalMatrix::TridiagonalMatrix
 ( int r, double bv, double dv, double av )
 {

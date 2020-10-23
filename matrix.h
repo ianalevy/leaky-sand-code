@@ -49,6 +49,9 @@ public:
  friend Matrix padDir(const Matrix& A, 
  const int top, const int rt, const int bot, const int lt); 
  // pad A on each side with top, rt, bot lt rows
+  friend Matrix padDirVal(const Matrix& A, 
+ const int top, const int rt, const int bot, const int lt, const double val); 
+ // pad A on each side with top, rt, bot lt rows with val
 };
 
 std::ostream& operator<<(std::ostream& os, const Matrix& A);
