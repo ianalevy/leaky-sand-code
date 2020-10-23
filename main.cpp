@@ -63,9 +63,9 @@ int main()
 //output file to data folder
   string fn = fileName(ex1);
   cout << fn << endl;
-  std::ofstream out1(fn);
-  writeSand(*ex1.Stab(), out1);
-  out1.close();
+  std::ofstream outsave(fn);
+  writeSand(*ex1.Stab(), outsave);
+  outsave.close();
 
 return 0;
 }
