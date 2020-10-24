@@ -349,6 +349,8 @@ void stabilize(SandpileData &sand)
     int count = 100;
     int counti = 1000;
     double bht = sand.Bht();
+    double site = 0;
+    double osite = 0;
 
     MatrixPtr sandCur = new Matrix(*sand.Init());
     MatrixPtr odomCur = new Matrix(*sand.Odom());
@@ -375,20 +377,23 @@ void stabilize(SandpileData &sand)
         }
         if (i < sand.Chips())
         {
-            *odomCur = 10 * (*odomCur);
-            for(int i=0;i<nrow;i++){
+            //every site which has already fired, fires 10 more times
+            *odomCur = 10 * (*odomCur); //update odom
+            for(int i=0;i<nrow;i++){ //update sandpile
                 for(int j=0;j<ncol;j++){
-                    // if(((*sandCur)(i,j) > 0) || ((*odomCur)(i,j) > sand.Bht())){
-                    if(((*sandCur)(i,j) > 0) || ((*odomCur)(i,j) > std::max(0.0, bht))){                        
-                        (*sandCur)(i,j) *= 10; 
+                    site = (*sandCur)(i,j);
+                    osite = (*odomCur)(i,j);
+                    if ( osite > 0 ){ //site has fired
+                        (*sandCur)(i,j) = 10*site;
+                    }
+                    else { //site hasn't fired
+                        (*sandCur)(i,j) = 10*(site-bht) + bht;}
                     }
                 }
             }
         }
-    }
-
-    //update final config;
-    sand.SetStab(sandCur, odomCur);
+        //update final config;
+        sand.SetStab(sandCur, odomCur);
 }
 
 //Output sandpile
