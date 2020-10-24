@@ -383,17 +383,21 @@ void stabilize(SandpileData &sand)
                 for(int j=0;j<ncol;j++){
                     site = (*sandCur)(i,j);
                     osite = (*odomCur)(i,j);
-                    if ( osite > 0 ){ //site has fired
-                        (*sandCur)(i,j) = 10*site;
+                    if ((osite <= 0) && (site >= bht) ){ //site hasn't fired but has received chips
+                        (*sandCur)(i,j) = 10*(site-bht) + bht;
                     }
-                    else { //site hasn't fired
-                        (*sandCur)(i,j) = 10*(site-bht) + bht;}
+                    else if ( (osite > 0) && (osite < 2*thresh) ){ //site has fired once
+                        (*sandCur)(i,j) = 10*(site-bht) + bht;
+                    }
+                    else { //site has fired more than once
+                        (*sandCur)(i,j) = 10 * site;
                     }
                 }
             }
         }
-        //update final config;
-        sand.SetStab(sandCur, odomCur);
+    }
+    //update final config;
+    sand.SetStab(sandCur, odomCur);
 }
 
 //Output sandpile
