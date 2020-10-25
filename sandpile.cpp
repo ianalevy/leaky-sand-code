@@ -386,12 +386,12 @@ void stabilize(SandpileData &sand)
                     if ( bht <= 0){//negative bht is like a hole
                         (*sandCur)(i,j) = 10*(site-bht) + bht;
                     }
-                    else {//positive bht (this needs to be checked!)
+                    else {//positive bht 
                         if ( site >= bht ){//chips above bht level
                             (*sandCur)(i,j) = 10*(site-bht) + bht;
                         }
-                        else {//chips below bht level
-                            (*sandCur)(i,j) = 10*site;
+                        else {//chips below bht level (this needs to be checked!)
+                            (*sandCur)(i,j) = std::max(10*(site-bht) + bht,0.0);
                         }  
                     }                  
                 }
