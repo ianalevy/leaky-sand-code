@@ -386,12 +386,14 @@ void stabilize(SandpileData &sand)
                     if ( bht <= 0){//negative bht is like a hole
                         (*sandCur)(i,j) = 10*(site-bht) + bht;
                     }
-                    else if ( site > bht ){// 
-                        (*sandCur)(i,j) = 10*(site-bht) + bht;
-                    }
-                    else {
-                        (*sandCur)(i,j) = 10*site;
-                    }                    
+                    else {//positive bht (this needs to be checked!)
+                        if ( site >= bht ){//chips above bht level
+                            (*sandCur)(i,j) = 10*(site-bht) + bht;
+                        }
+                        else {//chips below bht level
+                            (*sandCur)(i,j) = 10*site;
+                        }  
+                    }                  
                 }
             }
         }
