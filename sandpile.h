@@ -68,3 +68,6 @@ void stabilize(SandpileData &sand);
 
 // Output Sandpile
 void writeSand(const Matrix &sand, std::ostream &out);
+
+//Odometer value
+double odomSand(SandpileData &sand, Matrix& odom, int i, int j);

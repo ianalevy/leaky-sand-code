@@ -351,6 +351,7 @@ void stabilize(SandpileData &sand)
     double bht = sand.Bht();
     double site = 0;
     double osite = 0;
+    double guess = 0;
 
     MatrixPtr sandCur = new Matrix(*sand.Init());
     MatrixPtr odomCur = new Matrix(*sand.Odom());
@@ -391,7 +392,13 @@ void stabilize(SandpileData &sand)
                             (*sandCur)(i,j) = 10*(site-bht) + bht;
                         }
                         else {//chips below bht level (this needs to be checked!)
-                            (*sandCur)(i,j) = std::max(10*(site-bht) + bht,0.0);
+                            guess = odomSand(sand,*odomCur,i,j); 
+                            if (guess >= 0){
+                                (*sandCur)(i,j)= guess;
+                            }
+                            else{
+                                (*sandCur)(i,j)=guess+(osite-10*((*sandCur)(i,j)));
+                            }
                         }  
                     }                  
                 }
@@ -413,4 +420,62 @@ void writeSand(const Matrix &sand, std::ostream &out)
         }
         out << "\n";
     }
+}
+
+//Odometer value
+double odomSand(SandpileData &sand, Matrix& odom, int i, int j)
+{
+    const double thresh = sandThresh(sand);
+    Matrix sten(*sand.Stencil());
+
+    int cn = sten(0, 1);
+    int cne = sten(0, 2);
+    int ce = sten(1, 2);
+    int cse = sten(2, 2);
+    int cs = sten(2, 1);
+    int csw = sten(2, 0);
+    int cw = sten(1, 0);
+    int cnw = sten(0, 0);
+    double site = 0.0;
+
+    int nrow;
+    nrow = odom.Row();
+    int ncol;
+    ncol = odom.Col();
+
+    site -= odom(i,j);
+    if (i > 0)
+    {
+        site += (cs / thresh) * (odom)(i - 1, j);
+    }
+    if (i < nrow - 1)
+    {
+        site += (cn / thresh) * (odom)(i + 1, j);
+    }
+    if (j > 0)
+    {
+        site += (ce / thresh) * (odom)(i, j - 1);
+    }
+    if (j < ncol - 1)
+    {
+        site += (cw / thresh) * (odom)(i, j + 1);
+    }
+    if ((i > 0) && (j > 0))
+    {
+        site += (cse / thresh) * (odom)(i - 1, j - 1);
+    }
+    if ((i < nrow - 1) && (j > 0))
+    {
+        site += (cne / thresh) * (odom)(i + 1, j - 1);
+    }
+    if ((i > 0) && (j < ncol - 1))
+    {
+        site += (csw / thresh) * (odom)(i - 1, j + 1);
+    }
+    if ((i < nrow - 1) && (j < ncol - 1))
+    {
+        site += (cnw / thresh) * (odom)(i + 1, j + 1);
+    }
+    
+    return(site);
 }
