@@ -387,19 +387,17 @@ void stabilize(SandpileData &sand)
                     if ( bht <= 0){//negative bht is like a hole
                         (*sandCur)(i,j) = 10*(site-bht) + bht;
                     }
-                    else {//positive bht 
-                        if ( site >= bht ){//chips above bht level
-                            (*sandCur)(i,j) = 10*(site-bht) + bht;
+                    else {//positive bht use odom
+                        guess = odomSand(sand, *odomCur, i, j);
+                        if (guess + bht >= 0) //not center
+                        {
+                            (*sandCur)(i, j) = guess + bht;
                         }
-                        else {//chips below bht level (this needs to be checked!)
-                            guess = odomSand(sand,*odomCur,i,j); 
-                            if (guess >= 0){
-                                (*sandCur)(i,j)= guess;
-                            }
-                            else{
-                                (*sandCur)(i,j)=guess+(osite-10*((*sandCur)(i,j)));
-                            }
-                        }  
+                        else //at center
+                        {
+                            (*sandCur)(i, j) = guess 
+                            + 10*((*sandCur)(i,j) -.1*guess);
+                        }
                     }                  
                 }
             }
