@@ -54,18 +54,26 @@ int main()
   std::chrono::duration<double> elapsed_seconds = end-start;
   cout << "elapsed time: " << elapsed_seconds.count() << endl;
 
-  // cout << *ex1.Stab() << endl; //final pile
-
   std::ofstream out1("./data/out1.txt");
   writeSand(*ex1.Stab(), out1);
   out1.close();
 
+  std::ofstream out1o("./data/out1-odom.txt");
+  writeSand(*ex1.Odom(), out1o);
+  out1o.close();
+
 //output file to data folder
-  string fn = fileName(ex1);
+  string fn = fileName(ex1) + ".txt";
+  string fnodom = fileName(ex1) + "-odom.txt" ;
   cout << fn << endl;
+  cout << fnodom << endl;
   std::ofstream outsave(fn);
   writeSand(*ex1.Stab(), outsave);
   outsave.close();
+
+  std::ofstream outsaveo(fnodom);
+  writeSand(*ex1.Odom(), outsaveo);
+  outsaveo.close();
 
 return 0;
 }

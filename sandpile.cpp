@@ -122,7 +122,7 @@ string fileName(const SandpileData &A)
     name += "c1e" + std::to_string(A.chips) + dstr + "bht" + (std::to_string(bht)).substr(0,3+digits)
     + "n" + std::to_string(cn) + "ne" + std::to_string(cne) + "e" + std::to_string(ce) + "se" + std::to_string(cse)
     + "s" + std::to_string(cs) + "sw" + std::to_string(csw) + "w" + std::to_string(cw) + "w" + std::to_string(cnw);
-    name += ".txt";
+    // name += ".txt";
     return (name);
 }
 
@@ -355,7 +355,7 @@ void stabilize(SandpileData &sand)
     MatrixPtr sandCur = new Matrix(*sand.Init());
     MatrixPtr odomCur = new Matrix(*sand.Odom());
 
-    for (int i = sand.InitChips(); i <= sand.Chips(); i++)
+    for (int ichips = sand.InitChips(); ichips <= sand.Chips(); ichips++)
     {
         max = maxEntry(*sandCur);
 
@@ -375,7 +375,7 @@ void stabilize(SandpileData &sand)
             if (((nrow % count == 0) || (ncol % count == 0)) && req)
                 cout << "rowsxcols=" << nrow << "x" << ncol << endl;
         }
-        if (i < sand.Chips())
+        if (ichips < sand.Chips())
         {
             //every site which has already fired, fires 10 more times
             *odomCur = 10 * (*odomCur); //update odom
@@ -383,21 +383,21 @@ void stabilize(SandpileData &sand)
                 for(int j=0;j<ncol;j++){
                     site = (*sandCur)(i,j);
                     osite = (*odomCur)(i,j);
-                    if ((osite <= 0) && (site >= bht) ){ //site hasn't fired but has received chips
+                    if ( bht <= 0){//negative bht is like a hole
                         (*sandCur)(i,j) = 10*(site-bht) + bht;
                     }
-                    else if ( (osite > 0) && (osite < 2*thresh) ){ //site has fired once
+                    else if ( site > bht ){// 
                         (*sandCur)(i,j) = 10*(site-bht) + bht;
                     }
-                    else { //site has fired more than once
-                        (*sandCur)(i,j) = 10 * site;
-                    }
+                    else {
+                        (*sandCur)(i,j) = 10*site;
+                    }                    
                 }
             }
         }
-    }
     //update final config;
     sand.SetStab(sandCur, odomCur);
+    }
 }
 
 //Output sandpile
