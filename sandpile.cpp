@@ -380,32 +380,41 @@ void stabilize(SandpileData &sand)
         {
             //every site which has already fired, fires 10 more times
             *odomCur = 10 * (*odomCur); //update odom
-            for(int i=0;i<nrow;i++){ //update sandpile
-                for(int j=0;j<ncol;j++){
-                    site = (*sandCur)(i,j);
-                    osite = (*odomCur)(i,j);
-                    if ( bht <= 0){//negative bht is like a hole
-                        (*sandCur)(i,j) = 10*(site-bht) + bht;
+            for (int i = 0; i < nrow; i++)
+            { //update sandpile
+                for (int j = 0; j < ncol; j++)
+                {
+                    site = (*sandCur)(i, j);
+                    osite = (*odomCur)(i, j);
+                    if (bht <= 0)
+                    { //negative bht is like a hole
+                        (*sandCur)(i, j) = 10 * (site - bht) + bht;
                     }
-                    else {//positive bht use odom
-                        guess = odomSand(sand, *odomCur, i, j);
-                        if (guess >= 0) //not center
-                        {
-                            (*sandCur)(i, j) = guess + bht;
-                            // (*sandCur)(i,j) = 10*(site-bht) + bht;
+                    else
+                    { //positive bht use odom
+                        if (osite > 0)
+                        { // has fired
+                            guess = odomSand(sand, *odomCur, i, j);
+                            if (guess + bht >= 0)
+                            { //not center
+                                (*sandCur)(i, j) = guess + bht;
+                            }
+                            else
+                            { // center
+                                // (*sandCur)(i, j) = 10 * std::max((site - bht), 0.0) + bht;
+                                (*sandCur)(i, j) = 10 * site;
+                            }
                         }
-                        else //at center
-                        {
-                            (*sandCur)(i, j) = guess //something is wrong here
-                            + 10.0*((*sandCur)(i,j) - 0.1*guess);
-                            // + 10.0*((*sandCur)(i,j)) - guess;
+                        else
+                        { //hasn't fired
+                            (*sandCur)(i, j) = 10 * (site - bht) + bht;
                         }
-                    }                  
+                    }
                 }
             }
         }
-    //update final config;
-    sand.SetStab(sandCur, odomCur);
+        //update final config;
+        sand.SetStab(sandCur, odomCur);
     }
 }
 
