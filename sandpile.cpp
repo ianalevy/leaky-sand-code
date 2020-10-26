@@ -395,7 +395,7 @@ void stabilize(SandpileData &sand)
                         if (osite > 0)
                         { // has fired
                             guess = odomSand(sand, *odomCur, i, j);
-                            if (guess + bht >= 0)
+                            if (guess >= 0)
                             { //not center
                                 (*sandCur)(i, j) = guess + bht;
                             }
