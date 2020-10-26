@@ -389,14 +389,16 @@ void stabilize(SandpileData &sand)
                     }
                     else {//positive bht use odom
                         guess = odomSand(sand, *odomCur, i, j);
-                        if (guess + bht >= 0) //not center
+                        if (guess >= 0) //not center
                         {
                             (*sandCur)(i, j) = guess + bht;
+                            // (*sandCur)(i,j) = 10*(site-bht) + bht;
                         }
                         else //at center
                         {
-                            (*sandCur)(i, j) = guess 
-                            + 10*((*sandCur)(i,j) -.1*guess);
+                            (*sandCur)(i, j) = guess //something is wrong here
+                            + 10.0*((*sandCur)(i,j) - 0.1*guess);
+                            // + 10.0*((*sandCur)(i,j)) - guess;
                         }
                     }                  
                 }
