@@ -377,7 +377,7 @@ void stabilize(SandpileData &sand)
                 cout << "rowsxcols=" << nrow << "x" << ncol << endl;
         }
         if (ichips < sand.Chips())
-        {
+        {   
             //every site which has already fired, fires 10 more times
             *odomCur = 10 * (*odomCur); //update odom
             for (int i = 0; i < nrow; i++)
@@ -395,13 +395,12 @@ void stabilize(SandpileData &sand)
                         if (osite > 0)
                         { // has fired
                             guess = odomSand(sand, *odomCur, i, j);
-                            if (guess >= 0)
+                            if (guess + bht >= 0)
                             { //not center
                                 (*sandCur)(i, j) = guess + bht;
                             }
                             else
                             { // center
-                                // (*sandCur)(i, j) = 10 * std::max((site - bht), 0.0) + bht;
                                 (*sandCur)(i, j) = 10 * site;
                             }
                         }
