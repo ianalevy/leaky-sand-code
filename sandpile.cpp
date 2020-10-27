@@ -379,35 +379,11 @@ void stabilize(SandpileData &sand)
         if (ichips < sand.Chips())
         {   
             //every site which has already fired, fires 10 more times
-            *odomCur = 10 * (*odomCur); //update odom
-            for (int i = 0; i < nrow; i++)
-            { //update sandpile
-                for (int j = 0; j < ncol; j++)
-                {
-                    site = (*sandCur)(i, j);
-                    osite = (*odomCur)(i, j);
-                    if (bht <= 0)
-                    { //negative bht is like a hole
+            if (bht <= 0){
+                *odomCur = 10 * (*odomCur); //update odom
+                for (int i = 0; i < nrow; i++){ //update sandpile
+                    for (int j = 0; j < ncol; j++){
                         (*sandCur)(i, j) = 10 * (site - bht) + bht;
-                    }
-                    else
-                    { //positive bht use odom
-                        if (osite > 0)
-                        { // has fired
-                            guess = odomSand(sand, *odomCur, i, j);
-                            if (guess + bht >= 0)
-                            { //not center
-                                (*sandCur)(i, j) = guess + bht;
-                            }
-                            else
-                            { // center
-                                (*sandCur)(i, j) = 10 * site;
-                            }
-                        }
-                        else
-                        { //hasn't fired
-                            (*sandCur)(i, j) = 10 * (site - bht) + bht;
-                        }
                     }
                 }
             }
