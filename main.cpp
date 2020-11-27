@@ -24,9 +24,9 @@ int main()
   double dloss; //chips which leak each fire 
   double bht; //background height
 
-  // cout << "start chips=10^n. For n<=9 enter n=" << endl;
-  // cin >> ichips;
-  ichips =3;
+  cout << "start chips=10^n. For n<=9 enter n=" << endl;
+  cin >> ichips;
+  // ichips =3;
   cout << "Total chips=10^m. For m>=3 enter m=" << endl;
   cin >> chips;
   cout << "Background height=" << endl;
