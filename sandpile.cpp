@@ -379,11 +379,12 @@ void stabilize(SandpileData &sand)
         if (ichips < sand.Chips())
         {   
             //every site which has already fired, fires 10 more times
-            if (bht <= 0){
+            if (bht <= 0){ //assuming integer bht
                 *odomCur = 10 * (*odomCur); //update odom
                 for (int i = 0; i < nrow; i++){ //update sandpile
                     for (int j = 0; j < ncol; j++){
-                        (*sandCur)(i, j) = 10 * (site - bht) + bht;
+                        site=(*sandCur)(i,j);
+                        (*sandCur)(i,j) = 10*(site-bht) + bht;
                     }
                 }
             }
