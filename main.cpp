@@ -37,8 +37,8 @@ int main()
   cout << endl;
 
 // stencil 
-  int cn = 0; int cne = 1; int ce = 0; int cse = 0; 
-  int cs = 0; int csw = 1; int cw = 1; int cnw = 0;
+  double cn = 1.01; int cne = 0; int ce = 1; int cse = 0; 
+  int cs = 1; int csw = 0; int cw = 1; int cnw = 0;
 
   Matrix A(3,3); 
   A(0,0) = cnw; A(0,1) = cn; A(0,2) = cne;
